@@ -11,8 +11,8 @@ eureka:
     enabled: false
 amazon:
   aws:
-    access-key-id: AKIAIDKXTRO4LCBGZQZQ
-    access-key-secret: WUGS52pfkLH883D/phLl1tPX6p2JLUlIk2b4o8jx
+    access-key-id: replace
+    access-key-secret: replace
 ribbon:
   ReadTimeout: 30000
   ConnectTimeout: 30000
