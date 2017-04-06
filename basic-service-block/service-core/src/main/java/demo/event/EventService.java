@@ -2,7 +2,8 @@ package demo.event;
 
 import demo.account.Account;
 import demo.account.AccountRepository;
-import demo.function.AccountFunctionService;
+import demo.domain.LambdaResponse;
+import demo.function.AccountCommandService;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +21,14 @@ public class EventService {
     final private Logger log = Logger.getLogger(EventService.class);
     final private AccountRepository accountRepository;
     final private AccountEventRepository accountEventRepository;
-    final private AccountFunctionService accountFunctionService;
+    final private AccountCommandService accountCommandService;
 
     public EventService(AccountRepository accountRepository,
                         AccountEventRepository accountEventRepository,
-                        AccountFunctionService accountFunctionService) {
+                        AccountCommandService accountCommandService) {
         this.accountRepository = accountRepository;
         this.accountEventRepository = accountEventRepository;
-        this.accountFunctionService = accountFunctionService;
+        this.accountCommandService = accountCommandService;
     }
 
     public Account apply(AccountEvent accountEvent) {
@@ -36,7 +37,6 @@ public class EventService {
 
         // Get the account referenced by the event
         Account account = accountRepository.findOne(accountEvent.getAccountId());
-        Account updatedAccount = account;
         Assert.notNull(account, "An account for that ID does not exist");
 
         // Get a history of events for this account
@@ -46,24 +46,32 @@ public class EventService {
         // Sort the events reverse chronological
         events.sort(Comparator.comparing(AccountEvent::getCreatedAt).reversed());
 
+        LambdaResponse<Account> result = null;
+
         // Route requests to serverless functions
         switch (accountEvent.getType()) {
             case ACCOUNT_ACTIVATED:
-                updatedAccount = accountFunctionService
-                        .accountActivated(getAccountEventMap(accountEvent, events, account));
+                result = accountCommandService.getActivateAccount()
+                        .apply(getAccountEventMap(accountEvent, events, account));
                 break;
             case ACCOUNT_SUSPENDED:
-                updatedAccount = accountFunctionService
-                        .accountSuspended(getAccountEventMap(accountEvent, events, account));
+                result = accountCommandService.getSuspendAccount()
+                        .apply(getAccountEventMap(accountEvent, events, account));
                 break;
         }
 
-        log.info(account.toString());
+        if(result.getException() != null) {
+            throw new RuntimeException(result.getException().getMessage(), result.getException());
+        }
+
+        Assert.notNull(result.getPayload(), "Lambda response payload must not be null");
+
+        log.info(result.getPayload());
 
         // Add the event and save the new account status
         addEvent(accountEvent, account);
 
-        account.setStatus(updatedAccount.getStatus());
+        account.setStatus(result.getPayload().getStatus());
         account = accountRepository.save(account);
 
         return account;

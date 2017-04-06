@@ -1,5 +1,6 @@
 package demo.event;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import demo.account.Account;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -27,6 +28,7 @@ public class AccountEvent {
     private AccountEventType type;
 
     @Transient
+    @JsonIgnore
     private Account entity;
 
     private Long accountId;
