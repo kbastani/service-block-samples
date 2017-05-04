@@ -59,7 +59,7 @@ jobs:
         args:
         - -exc
         - |
-          && cp -r account-activated/basic-service-block/functions/* functions \
+          cp -r account-activated/basic-service-block/functions/* functions \
           && cp account-activated/basic-service-block/deployment/scripts/* scripts
   - task: package
     file: account-activated/basic-service-block/deployment/tasks/build-js-function.yml
