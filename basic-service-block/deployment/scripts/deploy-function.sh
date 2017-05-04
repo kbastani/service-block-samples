@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function error_exit {
+error_exit() {
   msg="$1"
   if [ -z "$1" ]
     then
@@ -12,7 +12,7 @@ function error_exit {
   fi
 }
 
-function print_help {
+print_help() {
   echo -e "Usage: $ ./deploy-function.sh bucket_name"
 }
 
@@ -38,7 +38,7 @@ fi
 
 bucket_name="$1"
 
-function package {
+package() {
   # Create a CloudFormation package for this AWS Lambda function
   echo -e "Packaging deployment..."
   echo ""
@@ -53,7 +53,7 @@ function package {
      deploy
 }
 
-function deploy {
+deploy() {
   # Deploy the CloudFormation package
   echo -e "Deploying package from s3://$bucket_name..."
   echo ""
@@ -66,7 +66,7 @@ function deploy {
   rm ./deployment.yaml
 }
 
-function install_aws_cli {
+install_aws_cli() {
     apk --no-cache update && \
         apk --no-cache add python py-pip py-setuptools ca-certificates groff less && \
         pip --no-cache-dir install awscli && \
