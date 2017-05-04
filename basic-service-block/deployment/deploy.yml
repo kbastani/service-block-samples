@@ -70,7 +70,6 @@ jobs:
   - task: deploy
     file: account-activated/basic-service-block/deployment/tasks/deploy-js-function.yml
     params:
-      function_name: account-activated
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-access-key-secret}}

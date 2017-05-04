@@ -9,7 +9,7 @@ inputs:
 - name: functions
 - name: scripts
 outputs:
-- name: release
+- name: function-package
 run:
   path: sh
   args:
@@ -17,6 +17,6 @@ run:
   - |
     cd functions/$function_name \
     && ls ./node_modules &> /dev/null || echo "Installing node_modules..."; npm install --silent &> /dev/null; \
-    cd ../../release \
-    && cp -R ../functions/$function_name/* . \
-    && cp ../scripts/deploy-function.sh .
+    cd ../.. \
+    && cp -R functions/$function_name/* function-package \
+    && cp -R scripts/* function-package

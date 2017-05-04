@@ -6,11 +6,11 @@ image_resource:
     repository: alpine
     tag: '3.4'
 inputs:
-- name: release
+- name: function-package
 run:
   path: sh
   args:
   - -exc
   - |
-    cd release \
+    cd function-package \
     && ./deploy-function.sh $bucket_name
