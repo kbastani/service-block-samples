@@ -15,6 +15,8 @@ resources:
     branch: master
     paths:
     - ./basic-service-block/functions/account-activated
+    - ./basic-service-block/deployment/build-js-function.yml
+    - ./basic-service-block/deployment/deploy-js-function.yml
 jobs:
 - name: service-core-ci
   max_in_flight: 1
