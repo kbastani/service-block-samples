@@ -1,0 +1,33 @@
+
+---
+resources:
+- name: source
+  type: git
+  source:
+    uri: git@github.com:kbastani/service-block-samples.git
+    branch: master
+    paths:
+    - ./basic-service-block
+jobs:
+- name: deploy
+  max_in_flight: 1
+  plan:
+  - get: source
+    trigger: true
+  - task: build
+    file: source/deployment/tasks/build.yml
+  - task: deployment
+    file: source/deployment/tasks/deploy.yml
+    params:
+      path: artifact/account-service-core.jar
+      current_app_name: account-service-core
+      host: account-service-core
+      domain: cfapps.io
+      manifest: source/basic-service-block/service-core/manifest.yml
+      api: {{pws-api}}
+      username: {{pws-username}}
+      password: {{pws-password}}
+      organization: {{pws-org}}
+      aws_access_key_id: {{aws-access}}
+      amazon_aws_access_key_secret: {{aws-secret}}
+      space: {{pws-space}}

@@ -60,8 +60,9 @@ public class EventService {
                 break;
         }
 
-        if(result.getException() != null) {
-            throw new RuntimeException(result.getException().getMessage(), result.getException());
+        if (result.getException() != null) {
+            throw new RuntimeException(result.getException().getMessage(),
+                    result.getException());
         }
 
         Assert.notNull(result.getPayload(), "Lambda response payload must not be null");

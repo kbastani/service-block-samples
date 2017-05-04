@@ -4,7 +4,6 @@ import demo.event.AccountEvent;
 import demo.event.AccountEventRepository;
 import demo.event.AccountEventType;
 import demo.event.EventService;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.LinkBuilder;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceSupport;
@@ -27,14 +26,15 @@ public class AccountController {
     private final EventService eventService;
     private final AccountEventRepository eventRepository;
 
-    public AccountController(AccountRepository accountRepository, EventService eventService, AccountEventRepository eventRepository) {
+    public AccountController(AccountRepository accountRepository, EventService eventService,
+                             AccountEventRepository eventRepository) {
         this.accountRepository = accountRepository;
         this.eventService = eventService;
         this.eventRepository = eventRepository;
     }
 
     @RequestMapping(path = "/accounts")
-    public ResponseEntity getAccounts(@RequestBody(required = false) PageRequest pageRequest) {
+    public ResponseEntity getAccounts() {
         return new ResponseEntity<>(accountRepository.findAll(), HttpStatus.OK);
     }
 

@@ -1,0 +1,19 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: maven
+    tag: alpine
+inputs:
+- name: source
+outputs:
+- name: artifact
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    cd source \
+    && mvn clean package -DskipDockerBuild \
+    && mv basic-service-block/service-core/target/service-core*.jar ../artifact/account-service-core.jar
