@@ -4,7 +4,7 @@ resources:
 - name: source
   type: git
   source:
-    uri: git@github.com:kbastani/service-block-samples.git
+    uri: https://github.com/kbastani/service-block-samples
     branch: master
     paths:
     - ./basic-service-block
@@ -15,9 +15,9 @@ jobs:
   - get: source
     trigger: true
   - task: build
-    file: source/deployment/tasks/build.yml
+    file: source/basic-service-block/deployment/tasks/build.yml
   - task: deployment
-    file: source/deployment/tasks/deploy.yml
+    file: source/basic-service-block/deployment/tasks/deploy.yml
     params:
       path: artifact/account-service-core.jar
       current_app_name: account-service-core

@@ -7,7 +7,7 @@ image_resource:
     tag: latest
 inputs:
 - name: artifact
-- name: source-code
+- name: source
 run:
   path: sh
   args:
