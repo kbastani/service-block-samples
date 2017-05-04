@@ -28,6 +28,6 @@ jobs:
       username: {{pws-username}}
       password: {{pws-password}}
       organization: {{pws-org}}
-      aws_access_key_id: {{aws-access}}
-      amazon_aws_access_key_secret: {{aws-secret}}
+      aws_access_key_id: {{aws-access-key-id}}
+      aws_access_key_secret: {{aws-access-key-secret}}
       space: {{pws-space}}
