@@ -74,6 +74,7 @@ public class EventService {
 
         account.setStatus(result.getPayload().getStatus());
         account = accountRepository.save(account);
+        accountRepository.flush();
 
         return account;
     }
