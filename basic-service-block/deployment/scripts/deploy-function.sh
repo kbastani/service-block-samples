@@ -64,7 +64,7 @@ deploy() {
 
   aws -- cloudformation deploy \
      --template-file deployment.yaml \
-     --stack-name accounts || error_exit "Deployment failed..."
+     --stack-name $function_name || error_exit "Deployment failed..."
 
   # Remove the deployment package
   rm ./deployment.yaml
