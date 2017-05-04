@@ -1,7 +1,10 @@
 package amazon.aws;
 
-import com.amazonaws.auth.*;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.BasicSessionCredentials;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
 import com.amazonaws.services.lambda.invoke.LambdaFunction;
 import com.amazonaws.services.lambda.invoke.LambdaInvokerFactory;
@@ -56,6 +59,14 @@ public class AWSLambdaConfigurerAdapter {
                                 getBasicSessionCredentials()))
                         .build())
                 .build(type);
+    }
+
+    public AWSLambda getLambdaClient() {
+        return AWSLambdaClientBuilder.standard()
+                .withRegion(Regions.US_EAST_1)
+                .withCredentials(new AWSStaticCredentialsProvider(
+                        getBasicSessionCredentials()))
+                .build();
     }
 
     /**

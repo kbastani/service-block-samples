@@ -1,0 +1,21 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: mkenney/docker-npm
+    tag: latest
+inputs:
+- name: functions
+- name: scripts
+outputs:
+- name: release
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    cd functions/$function_name \
+    && ls ./node_modules &> /dev/null || echo "Installing node_modules..."; npm install --silent &> /dev/null; echo "" \
+    && cp -r ./* ../release \
+    && cp -r ../scripts/* ../release

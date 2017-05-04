@@ -6,7 +6,7 @@ image_resource:
     repository: maven
     tag: alpine
 inputs:
-- name: source
+- name: service-core
 outputs:
 - name: artifact
 run:
@@ -14,6 +14,6 @@ run:
   args:
   - -exc
   - |
-    cd source \
+    cd service-core \
     && mvn clean package -DskipDockerBuild \
     && mv basic-service-block/service-core/target/service-core*.jar ../artifact/account-service-core.jar

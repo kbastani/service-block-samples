@@ -1,0 +1,13 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: mesosphere/aws-cli
+    tag: latest
+inputs:
+- name: release
+run:
+  path: release/deploy-function.sh
+  args:
+  - $bucket_name

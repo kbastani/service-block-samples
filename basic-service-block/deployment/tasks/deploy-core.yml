@@ -7,7 +7,7 @@ image_resource:
     tag: latest
 inputs:
 - name: artifact
-- name: source
+- name: service-core
 run:
   path: sh
   args:
