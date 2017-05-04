@@ -18,7 +18,7 @@ function error_exit {
 }
 
 function print_help {
-  echo -e "Usage: $ ./deploy.sh bucket_name"
+  echo -e "Usage: $ ./deploy-function.sh bucket_name"
 }
 
 if [ "$1" = 'help' ]
@@ -45,7 +45,7 @@ bucket_name="$1"
 
 function package {
   # Create a CloudFormation package for this AWS Lambda function
-  echo -e "Packacking deployment..."
+  echo -e "Packaging deployment..."
   echo ""
 
   aws cloudformation package \

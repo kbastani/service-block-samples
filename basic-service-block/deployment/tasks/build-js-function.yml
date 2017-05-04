@@ -16,7 +16,7 @@ run:
   - -exc
   - |
     cd functions/$function_name \
-    && ls ./node_modules &> /dev/null || echo "Installing node_modules..."; npm install --silent &> /dev/null; echo "" \
+    && ls ./node_modules &> /dev/null || echo "Installing node_modules..."; npm install --silent &> /dev/null; \
     cd ../../release \
-    cp -R functions/$function_name/* . \
-    mv ../scripts/deploy-function.sh .
+    && cp -R ../functions/$function_name/* . \
+    && cp ../scripts/deploy-function.sh .
