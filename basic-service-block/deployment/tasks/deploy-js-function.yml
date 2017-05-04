@@ -13,4 +13,6 @@ run:
   - -exc
   - |
     cd function-package \
-    && ./deploy-function.sh $bucket_name
+    && echo $(ls) \
+    && echo $(pwd) \
+    && sh deploy-function.sh $bucket_name
