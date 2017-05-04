@@ -4,3 +4,5 @@ instances: 1
 path: ./target/service-core-0.0.1-SNAPSHOT.jar
 disk_quota: 1024M
 host: account-service-core
+services:
+ - account-core-db
