@@ -17,5 +17,5 @@ run:
   - |
     cd functions/$function_name \
     && ls ./node_modules &> /dev/null || echo "Installing node_modules..."; npm install --silent &> /dev/null; echo "" \
-    && cp -r ./* ../release \
-    && cp -r ../scripts/* ../release
+    cp -r ./* ../release \
+    cp -r ../scripts/* ../release
