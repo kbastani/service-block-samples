@@ -1,5 +1,9 @@
 #!/bin/bash
 
+export AWS_ACCESS_KEY_ID=$aws_access_key_id
+export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
+export AWS_DEFAULT_REGION=$aws_default_region
+
 error_exit() {
   msg="$1"
   if [ -z "$1" ]
@@ -58,7 +62,7 @@ deploy() {
   echo -e "Deploying package from s3://$bucket_name..."
   echo ""
 
-  aws cloudformation deploy \
+  aws -- cloudformation deploy \
      --template-file deployment.yaml \
      --stack-name accounts || error_exit "Deployment failed..."
 
