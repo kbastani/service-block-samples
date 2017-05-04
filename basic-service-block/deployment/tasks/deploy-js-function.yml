@@ -13,4 +13,5 @@ run:
   - -exc
   - |
     cd release \
+    && ls \
     && ./deploy-function.sh $bucket_name
