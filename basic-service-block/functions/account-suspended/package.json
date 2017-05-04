@@ -1,0 +1,22 @@
+{
+  "name": "account-suspended-function",
+  "version": "1.0.0",
+  "description": "Account suspended AWS Lambda function",
+  "main": "index.js",
+  "dependencies": {
+    "traverson": "^3.2.0",
+    "traverson-hal": "^4.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kbastani/account-suspended-function.git"
+  },
+  "author": "kbastani",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kbastani/account-suspended-function/issues"
+  },
+  "homepage": "https://github.com/kbastani/account-suspended-function#readme"
+}

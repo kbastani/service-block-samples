@@ -15,8 +15,13 @@ resources:
     branch: master
     paths:
     - ./basic-service-block/functions/account-activated
-    - ./basic-service-block/deployment/build-js-function.yml
-    - ./basic-service-block/deployment/deploy-js-function.yml
+- name: account-suspended
+  type: git
+  source:
+    uri: https://github.com/kbastani/service-block-samples
+    branch: master
+    paths:
+    - ./basic-service-block/functions/account-suspended
 jobs:
 - name: service-core-ci
   max_in_flight: 1
@@ -71,6 +76,41 @@ jobs:
     file: account-activated/basic-service-block/deployment/tasks/deploy-js-function.yml
     params:
       function_name: account-activated
+      aws_default_region: {{aws-region}}
+      aws_access_key_id: {{aws-access-key-id}}
+      aws_secret_access_key: {{aws-access-key-secret}}
+      bucket_name: {{s3-bucket}}
+- name: account-suspended-ci
+  max_in_flight: 1
+  plan:
+  - get: account-suspended
+    trigger: true
+  - task: prepare
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: busybox}
+      inputs:
+        - name: account-suspended
+      outputs:
+        - name: functions
+        - name: scripts
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cp -r account-suspended/basic-service-block/functions/* functions \
+          && cp -r account-suspended/basic-service-block/deployment/scripts/* scripts
+  - task: package
+    file: account-suspended/basic-service-block/deployment/tasks/build-js-function.yml
+    params:
+      function_name: account-suspended
+  - task: deploy
+    file: account-suspended/basic-service-block/deployment/tasks/deploy-js-function.yml
+    params:
+      function_name: account-suspended
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-access-key-secret}}
