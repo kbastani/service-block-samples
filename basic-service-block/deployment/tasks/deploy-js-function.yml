@@ -8,6 +8,9 @@ image_resource:
 inputs:
 - name: release
 run:
-  path: release/deploy-function.sh
+  path: sh
   args:
-  - $bucket_name
+  - -exc
+  - |
+    cd release \
+    && ./deploy-function.sh $bucket_name
