@@ -17,6 +17,7 @@ run:
     && cf login -u $username -p $password -o $organization -s $space \
     && cf rename $current_app_name $current_app_name-existing \
     && cf push $current_app_name -p $path -f $manifest --no-start \
+    && cf bind-service account-service-core account-core-db
     && cf set-env $current_app_name AMAZON_AWS_ACCESS_KEY_ID $aws_access_key_id \
     && cf set-env $current_app_name AMAZON_AWS_ACCESS_KEY_SECRET $aws_access_key_secret \
     && cf start $current_app_name \
