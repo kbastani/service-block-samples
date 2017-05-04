@@ -1,14 +1,5 @@
 #!/bin/bash
 
-function install_aws_cli {
-    apk --no-cache update && \
-        apk --no-cache add python py-pip py-setuptools ca-certificates groff less && \
-        pip --no-cache-dir install awscli && \
-        rm -rf /var/cache/apk/*
-
-    package
-}
-
 function error_exit {
   msg="$1"
   if [ -z "$1" ]
@@ -73,6 +64,15 @@ function deploy {
 
   # Remove the deployment package
   rm ./deployment.yaml
+}
+
+function install_aws_cli {
+    apk --no-cache update && \
+        apk --no-cache add python py-pip py-setuptools ca-certificates groff less && \
+        pip --no-cache-dir install awscli && \
+        rm -rf /var/cache/apk/*
+
+    package
 }
 
 install_aws_cli
