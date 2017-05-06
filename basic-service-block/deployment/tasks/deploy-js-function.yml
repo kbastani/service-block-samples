@@ -8,6 +8,6 @@ image_resource:
 inputs:
 - name: function-package
 run:
-  path: ./function-package/deploy-function.sh
+  path: sh
   args:
-  - $bucket_name
+  - sh ./function-package/deploy-function.sh $bucket_name
