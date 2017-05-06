@@ -8,13 +8,6 @@ image_resource:
 inputs:
 - name: function-package
 run:
-  path: sh
+  path: deploy-function.sh
   args:
-  - -ex
-  - |
-    cf api $api \
-    && cf login -u $username -p $password -o $organization -s $space \
-    && cd function-package \
-    && echo $(ls) \
-    && echo $(pwd) \
-    && sh deploy-function.sh $bucket_name
+  - $bucket_name

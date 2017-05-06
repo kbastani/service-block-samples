@@ -1,5 +1,9 @@
 #!/bin/bash
 
+cf api $api \
+    && cf login -u $username -p $password -o $organization -s $space \
+    && cd function-package
+
 export AWS_ACCESS_KEY_ID=$aws_access_key_id
 export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
 export AWS_DEFAULT_REGION=$aws_default_region
@@ -66,7 +70,7 @@ deploy() {
   aws -- cloudformation deploy \
      --template-file deployment.yaml \
      --stack-name $function_name \
-     --parameter-overrides ServiceCredentials=$SERVICE_CREDENTIALS || error_exit "Deployment failed..."
+     --parameter-overrides ServiceCredentials="$SERVICE_CREDENTIALS" || error_exit "Deployment failed..."
 
   # Remove the deployment package
   rm ./deployment.yaml
