@@ -10,7 +10,7 @@ inputs:
 run:
   path: sh
   args:
-  - -exc
+  - -ex
   - |
     cf api $api \
     && cf login -u $username -p $password -o $organization -s $space \
