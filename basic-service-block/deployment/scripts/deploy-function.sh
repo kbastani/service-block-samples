@@ -76,10 +76,14 @@ deploy() {
 }
 
 install_aws_cli() {
-    apk --no-cache update && \
-        apk --no-cache add python py-pip py-setuptools ca-certificates groff less && \
-        pip --no-cache-dir install awscli && \
-        rm -rf /var/cache/apk/*
+    #    apk --no-cache update && \
+    #        apk --no-cache add python py-pip py-setuptools ca-certificates groff less && \
+    #        pip --no-cache-dir install awscli && \
+    #        rm -rf /var/cache/apk/*
+
+    sudo apt-get install python3.4 && \
+        curl -O https://bootstrap.pypa.io/get-pip.py && \
+        pip --no-cache-dir install awscli
 
     package
 }
