@@ -10,4 +10,7 @@ inputs:
 run:
   path: sh
   args:
-  - sh ./function-package/deploy-function.sh $bucket_name
+  - -exc
+  - |
+    && cd function-package \
+    && sh deploy-function.sh $bucket_name

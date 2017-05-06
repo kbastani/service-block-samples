@@ -1,8 +1,7 @@
 #!/bin/bash
 
 cf api $api \
-    && cf login -u $username -p $password -o $organization -s $space \
-    && cd function-package
+    && cf login -u $username -p $password -o $organization -s $space
 
 export AWS_ACCESS_KEY_ID=$aws_access_key_id
 export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
