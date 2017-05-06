@@ -12,5 +12,5 @@ run:
   args:
   - -exc
   - |
-    && cd function-package \
+    cd function-package \
     && sh deploy-function.sh $bucket_name
