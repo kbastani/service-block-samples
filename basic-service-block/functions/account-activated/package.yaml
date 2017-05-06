@@ -25,4 +25,4 @@ Resources:
 Parameters:
   ServiceCredentials:
     Type: "String"
-    Default: '{}'
+    Default: "{}"
