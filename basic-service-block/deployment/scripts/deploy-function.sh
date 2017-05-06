@@ -66,7 +66,7 @@ deploy() {
   aws -- cloudformation deploy \
      --template-file deployment.yaml \
      --stack-name $function_name \
-     --parameter-overrides ServiceCredentials=$service_credentials || error_exit "Deployment failed..."
+     --parameter-overrides ServiceCredentials=$SERVICE_CREDENTIALS || error_exit "Deployment failed..."
 
   # Remove the deployment package
   rm ./deployment.yaml
