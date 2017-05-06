@@ -3,6 +3,7 @@
 export AWS_ACCESS_KEY_ID=$aws_access_key_id
 export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
 export AWS_DEFAULT_REGION=$aws_default_region
+export SERVICE_CREDENTIALS=$(cf curl /v2/service_keys/$(cf service-key --guid $service_instance $service_key) | jq '.entity.credentials')
 
 error_exit() {
   msg="$1"
@@ -64,10 +65,14 @@ deploy() {
 
   aws -- cloudformation deploy \
      --template-file deployment.yaml \
-     --stack-name $function_name || error_exit "Deployment failed..."
+     --stack-name $function_name \
+     --parameter-overrides ServiceCredentials=$service_credentials || error_exit "Deployment failed..."
 
   # Remove the deployment package
   rm ./deployment.yaml
+
+  # Set environment variables on the Lambda function
+  aws
 }
 
 install_aws_cli() {

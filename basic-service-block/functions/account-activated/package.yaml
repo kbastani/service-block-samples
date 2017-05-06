@@ -12,6 +12,9 @@ Resources:
       Description: Responds to an account creation event
       MemorySize: 128
       Timeout: 10
+      Environment:
+        Variables:
+          SERVICE_CREDENTIALS: !Ref ServiceCredentials
       Role: 'arn:aws:iam::194021864310:role/service-role/public'
       Events:
         Api1:
