@@ -3,7 +3,7 @@
 export AWS_ACCESS_KEY_ID=$aws_access_key_id
 export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
 export AWS_DEFAULT_REGION=$aws_default_region
-export SERVICE_CREDENTIALS=$(cf curl /v2/service_keys/$(cf service-key --guid $service_instance $service_key) | jq '.entity.credentials')
+export SERVICE_CREDENTIALS=$(cf curl /v2/service_keys/$(cf service-key --guid $service_instance $service_key) | jq '.entity.credentials | @json')
 
 error_exit() {
   msg="$1"
