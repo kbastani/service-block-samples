@@ -1,7 +1,15 @@
+'use strict'
+
+var mongoClient = require('mongodb').MongoClient;
+
+let mongoUri;
+let cachedDb = null;
+
 exports.handler = (event, context, callback) => {
 
-    var result = store(function(db) {
-        return db.collection('inserts').insertOne(event);
+    // Test Mongo storage connection
+    store(function (db) {
+        console.log(db.collection('inserts').insertOne(event));
     });
 
     var events = event.eventLog;
@@ -9,11 +17,11 @@ exports.handler = (event, context, callback) => {
 
     var lastEvent;
 
-    if(events.length > 0) {
+    if (events.length > 0) {
         lastEvent = events[0];
     }
 
-    if((lastEvent != null || lastEvent != undefined) ? lastEvent.type != "ACCOUNT_ACTIVATED" : true) {
+    if ((lastEvent != null || lastEvent != undefined) ? lastEvent.type != "ACCOUNT_ACTIVATED" : true) {
         account.status = "ACCOUNT_ACTIVATED";
         callback(null, account);
     } else {
@@ -23,29 +31,19 @@ exports.handler = (event, context, callback) => {
 };
 
 
-function store(transaction) {
-    // Fetch connection from environment
-    var url = JSON.parse(process.env.SERVICE_CREDENTIALS).uri;
+function store(query) {
+    if (mongoUri != null) {
+        query(cachedDb);
+    } else {
+        // Fetch credentials from environment
+        mongoUri = JSON.parse(process.env.SERVICE_CREDENTIALS).uri;
 
-    // Create mongo client
-    var mongoClient = require('mongodb').MongoClient, assert = require('assert');
-
-    // Create transaction context
-    var apply = function(transaction) {
-        var response = {};
-
-        // Use connect method to connect to the server
+        // Cache database connection
         mongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
             console.log("Connected successfully to server");
-
-            // Apply transaction
-            response = transaction(db);
-            db.close();
+            cachedDb = db;
+            query(cachedDb);
         });
-
-        return response;
-    };
-
-    return apply(transaction);
+    }
 }
