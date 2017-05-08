@@ -24,11 +24,8 @@ exports.handler = (event, context, callback) => {
 
 
 function store(transaction) {
-
-    console.log(process.env.SERVICE_CREDENTIALS);
-
     // Fetch connection from environment
-    var url = process.env.SERVICE_CREDENTIALS.uri;
+    var url = JSON.parse(process.env.SERVICE_CREDENTIALS).uri;
 
     // Create mongo client
     var mongoClient = require('mongodb').MongoClient, assert = require('assert');
