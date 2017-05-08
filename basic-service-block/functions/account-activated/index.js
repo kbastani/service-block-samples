@@ -40,7 +40,7 @@ function store(transaction) {
             console.log("Connected successfully to server");
 
             // Apply transaction
-            response = transaction(mongoClient);
+            response = transaction(db);
             db.close();
         });
 
