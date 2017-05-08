@@ -30,30 +30,36 @@ exports.handler = (event, context, callback) => {
  */
 function processEvent(event, context, callback, db) {
 
-    db.collection('inserts').insertOne(event, function (err, r) {
-        if(err == null) {
-            console.log(r);
+    // Apply the event to the account
+    var applyAccountEvent = function () {
+        var events = event.eventLog;
+        var account = event.account;
+
+        var lastEvent;
+
+        if (events.length > 0) {
+            lastEvent = events[0];
+        }
+
+        if ((lastEvent != null || lastEvent != undefined) ? lastEvent.type != "ACCOUNT_ACTIVATED" : true) {
+            account.status = "ACCOUNT_ACTIVATED";
+            callback(null, account);
         } else {
-            console.log(err);
+            var error = new Error("Account already activated");
+            callback(error);
+        }
+    };
+
+    // Tests writing to MongoDB from Lambda
+    db.collection('inserts').insertOne(event, function (err, r) {
+        if (err == null) {
+            console.log(r);
+            applyAccountEvent();
+        } else {
+            console.error(err);
+            callback(null, err);
         }
     });
-
-    var events = event.eventLog;
-    var account = event.account;
-
-    var lastEvent;
-
-    if (events.length > 0) {
-        lastEvent = events[0];
-    }
-
-    if ((lastEvent != null || lastEvent != undefined) ? lastEvent.type != "ACCOUNT_ACTIVATED" : true) {
-        account.status = "ACCOUNT_ACTIVATED";
-        callback(null, account);
-    } else {
-        var error = new Error("Account already activated");
-        callback(error);
-    }
 }
 
 /**
