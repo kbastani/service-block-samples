@@ -11,6 +11,8 @@
 
 target/
 
+node_modules/
+
 # User-specific stuff:
 .idea/**/workspace.xml
 .idea/**/tasks.xml

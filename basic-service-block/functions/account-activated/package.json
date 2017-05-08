@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "traverson": "^3.2.0",
-    "traverson-hal": "^4.1.1"
+    "traverson-hal": "^4.1.1",
+    "mongodb": "^2.2.0"
   },
   "devDependencies": {},
   "scripts": {},
