@@ -39,7 +39,7 @@ function store(query) {
         mongoUri = JSON.parse(process.env.SERVICE_CREDENTIALS).uri;
 
         // Cache database connection
-        mongoClient.connect(url, function (err, db) {
+        mongoClient.connect(mongoUri, function (err, db) {
             assert.equal(null, err);
             console.log("Connected successfully to server");
             cachedDb = db;
