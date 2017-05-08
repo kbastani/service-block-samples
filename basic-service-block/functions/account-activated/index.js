@@ -7,9 +7,16 @@ let cachedDb = null;
 
 exports.handler = (event, context, callback) => {
 
+    // Enables reuse of cached database connection
+    context.callbackWaitsForEmptyEventLoop = false;
+
     // Process the event with Cloud Foundry service connections
-    withServices(function (db) {
-        processEvent(event, context, callback, db);
+    withServices(function (db, err) {
+        if(err != null) {
+            callback(null, err);
+        } else {
+            processEvent(event, context, callback, db);
+        }
     });
 };
 
@@ -72,6 +79,7 @@ function initializeDataSource(callback) {
                 callback(cachedDb);
             } else {
                 console.log("Could not connect to MongoDB server: " + err);
+                callback(null, err);
             }
         });
     } else {
