@@ -60,7 +60,7 @@ function withServices(callback) {
  * Initializes and caches the MongoDB connection provided by Cloud Foundry.
  */
 function initializeDataSource(callback) {
-    if (mongoUri != null) {
+    if (mongoUri == null) {
         // Fetch credentials from environment
         mongoUri = JSON.parse(process.env.SERVICE_CREDENTIALS).uri;
 
