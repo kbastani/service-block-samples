@@ -7,9 +7,28 @@ let cachedDb = null;
 
 exports.handler = (event, context, callback) => {
 
-    // Test Mongo storage connection
-    store(function (db) {
-        console.log(db.collection('inserts').insertOne(event));
+    // Process the event with Cloud Foundry service connections
+    withServices(function (db) {
+        processEvent(event, context, callback, db);
+    });
+};
+
+/**
+ * The event handler implementation for processing a Lambda event invocation from Spring Boot.
+ *
+ * @param event is the event payload
+ * @param context is the AWS Lambda context object
+ * @param callback is the function that provides a response back to Spring Boot
+ * @param db is the MongoDB service provided from Cloud Foundry
+ */
+function processEvent(event, context, callback, db) {
+
+    db.collection('inserts').insertOne(event, function (err, r) {
+        if(err == null) {
+            console.log(r);
+        } else {
+            console.log(err);
+        }
     });
 
     var events = event.eventLog;
@@ -28,22 +47,34 @@ exports.handler = (event, context, callback) => {
         var error = new Error("Account already activated");
         callback(error);
     }
-};
+}
 
+/**
+ * Wrapper function for providing Cloud Foundry data service context to an AWS Lambda function.
+ */
+function withServices(callback) {
+    initializeDataSource(callback);
+}
 
-function store(query) {
+/**
+ * Initializes and caches the MongoDB connection provided by Cloud Foundry.
+ */
+function initializeDataSource(callback) {
     if (mongoUri != null) {
-        query(cachedDb);
-    } else {
         // Fetch credentials from environment
         mongoUri = JSON.parse(process.env.SERVICE_CREDENTIALS).uri;
 
         // Cache database connection
         mongoClient.connect(mongoUri, function (err, db) {
-            assert.equal(null, err);
-            console.log("Connected successfully to server");
-            cachedDb = db;
-            query(cachedDb);
+            if (err == null) {
+                console.log("Connected successfully to MongoDB server");
+                cachedDb = db;
+                callback(cachedDb);
+            } else {
+                console.log("Could not connect to MongoDB server: " + err);
+            }
         });
+    } else {
+        callback(cachedDb);
     }
 }
