@@ -26,8 +26,9 @@
     </properties>
 
     <modules>
-        <module>basic-service-block</module>
-        <module>spring-boot-starters</module>
+        <module>basic-block</module>
+        <module>cqrs-block</module>
+        <module>starters</module>
     </modules>
 
     <dependencies>

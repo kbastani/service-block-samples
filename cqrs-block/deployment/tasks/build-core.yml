@@ -16,4 +16,4 @@ run:
   - |
     cd service-core \
     && mvn clean package -DskipDockerBuild \
-    && mv basic-service-block/service-core/target/service-core*.jar ../artifact/account-service-core.jar
+    && mv cqrs-service-block/service-core/target/service-core*.jar ../artifact/account-service-core.jar

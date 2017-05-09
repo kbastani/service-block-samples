@@ -1,0 +1,25 @@
+﻿AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Account activated handler
+Resources:
+  accountActivated:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs4.3
+      FunctionName: account-activated
+      CodeUri: .
+      Description: Responds to an account creation event
+      MemorySize: 128
+      Timeout: 10
+      Role: 'arn:aws:iam::194021864310:role/service-role/public'
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /accountActivated
+            Method: ANY
+Parameters:
+  ServiceCredentials:
+    Type: "String"
+    Default: "{}"

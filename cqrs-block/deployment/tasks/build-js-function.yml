@@ -1,0 +1,22 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: mkenney/npm
+    tag: 'alpine'
+inputs:
+- name: functions
+- name: scripts
+outputs:
+- name: function-package
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    cd functions/$function_name \
+    && ls ./node_modules &> /dev/null || echo "Installing node_modules..."; npm install --silent &> /dev/null; \
+    cd ../.. \
+    && cp -R functions/$function_name/* function-package \
+    && cp -R scripts/* function-package

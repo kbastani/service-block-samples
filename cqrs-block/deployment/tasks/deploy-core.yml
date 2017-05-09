@@ -1,0 +1,24 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: concourse/cf-resource
+    tag: latest
+inputs:
+- name: artifact
+- name: service-core
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    cf api $api \
+    && cf login -u $username -p $password -o $organization -s $space \
+    && cf rename $current_app_name $current_app_name-existing \
+    && cf push $current_app_name -p $path -f $manifest --no-start \
+    && cf set-env $current_app_name AMAZON_AWS_ACCESS_KEY_ID $aws_access_key_id \
+    && cf set-env $current_app_name AMAZON_AWS_ACCESS_KEY_SECRET $aws_access_key_secret \
+    && cf start $current_app_name \
+    && cf map-route $current_app_name $domain --hostname $host \
+    && cf delete -f $current_app_name-existing

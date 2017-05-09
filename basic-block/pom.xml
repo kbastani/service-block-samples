@@ -16,7 +16,7 @@
     </parent>
 
     <modules>
-        <module>service-core</module>
+        <module>account-core</module>
     </modules>
 
     
