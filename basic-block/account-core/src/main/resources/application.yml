@@ -57,3 +57,4 @@ eureka:
     registryFetchIntervalSeconds: 5
     serviceUrl:
       defaultZone: ${vcap.services.discovery-service.credentials.uri:http://localhost:8761}/eureka/
+  
