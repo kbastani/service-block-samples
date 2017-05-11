@@ -7,9 +7,9 @@ Resources:
     Properties:
       Handler: index.handler
       Runtime: nodejs4.3
-      FunctionName: account-activated
+      FunctionName: project-activated
       CodeUri: .
-      Description: Responds to an account creation event
+      Description: Responds to an project creation event
       MemorySize: 128
       Timeout: 10
       Environment:

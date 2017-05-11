@@ -8,13 +8,13 @@ resources:
     branch: master
     paths:
     - ./cqrs/cqrs-service-core
-- name: account-activated
+- name: project-activated
   type: git
   source:
     uri: https://github.com/kbastani/service-block-samples
     branch: master
     paths:
-    - ./cqrs/functions/account-activated
+    - ./cqrs/functions/project-activated
 jobs:
 - name: cqrs-service-block-ci
   max_in_flight: 1
@@ -26,9 +26,9 @@ jobs:
   - task: deployment
     file: service-core/cqrs/deployment/tasks/deploy-core.yml
     params:
-      path: artifact/account-service-core.jar
+      path: artifact/github-stream-core.jar
       current_app_name: cqrs-service-block
-      host: account-service-core
+      host: github-stream-core
       domain: cfapps.io
       manifest: service-core/cqrs/cqrs-service-core/manifest.yml
       api: {{pws-api}}
@@ -38,10 +38,10 @@ jobs:
       aws_access_key_id: {{aws-access-key-id}}
       aws_access_key_secret: {{aws-access-key-secret}}
       space: {{pws-space}}
-- name: account-activated-ci
+- name: project-activated-ci
   max_in_flight: 1
   plan:
-  - get: account-activated
+  - get: project-activated
     trigger: true
   - task: prepare
     config:
@@ -50,7 +50,7 @@ jobs:
         type: docker-image
         source: {repository: busybox}
       inputs:
-        - name: account-activated
+        - name: project-activated
       outputs:
         - name: functions
         - name: scripts
@@ -59,16 +59,16 @@ jobs:
         args:
         - -exc
         - |
-          cp -r account-activated/cqrs/functions/* functions \
-          && cp -r account-activated/cqrs/deployment/scripts/* scripts
+          cp -r project-activated/cqrs/functions/* functions \
+          && cp -r project-activated/cqrs/deployment/scripts/* scripts
   - task: package
-    file: account-activated/cqrs/deployment/tasks/build-js-function.yml
+    file: project-activated/cqrs/deployment/tasks/build-js-function.yml
     params:
-      function_name: account-activated
+      function_name: project-activated
   - task: deploy
-    file: account-activated/cqrs/deployment/tasks/deploy-js-function.yml
+    file: project-activated/cqrs/deployment/tasks/deploy-js-function.yml
     params:
-      function_name: account-activated
+      function_name: project-activated
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-access-key-secret}}
@@ -80,10 +80,10 @@ jobs:
       password: {{pws-password}}
       organization: {{pws-org}}
       space: {{pws-space}}
-- name: account-suspended-ci
+- name: project-suspended-ci
   max_in_flight: 1
   plan:
-  - get: account-suspended
+  - get: project-suspended
     trigger: true
   - task: prepare
     config:
@@ -92,7 +92,7 @@ jobs:
         type: docker-image
         source: {repository: busybox}
       inputs:
-        - name: account-suspended
+        - name: project-suspended
       outputs:
         - name: functions
         - name: scripts
@@ -101,16 +101,16 @@ jobs:
         args:
         - -exc
         - |
-          cp -r account-suspended/cqrs/functions/* functions \
-          && cp -r account-suspended/cqrs/deployment/scripts/* scripts
+          cp -r project-suspended/cqrs/functions/* functions \
+          && cp -r project-suspended/cqrs/deployment/scripts/* scripts
   - task: package
-    file: account-suspended/cqrs/deployment/tasks/build-js-function.yml
+    file: project-suspended/cqrs/deployment/tasks/build-js-function.yml
     params:
-      function_name: account-suspended
+      function_name: project-suspended
   - task: deploy
-    file: account-suspended/cqrs/deployment/tasks/deploy-js-function.yml
+    file: project-suspended/cqrs/deployment/tasks/deploy-js-function.yml
     params:
-      function_name: account-suspended
+      function_name: project-suspended
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-access-key-secret}}
