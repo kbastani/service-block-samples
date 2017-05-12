@@ -1,13 +1,13 @@
 ﻿AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
-Description: project created handler
+Description: project committed handler
 Resources:
-  projectCreated:
+  projectCommitted:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: index.handler
       Runtime: nodejs4.3
-      FunctionName: project-created
+      FunctionName: project-committed
       CodeUri: .
       Description: Responds to an project creation event
       MemorySize: 128
@@ -20,7 +20,7 @@ Resources:
         Api1:
           Type: Api
           Properties:
-            Path: /projectCreated
+            Path: /projectCommitted
             Method: ANY
 Parameters:
   ServiceCredentials:

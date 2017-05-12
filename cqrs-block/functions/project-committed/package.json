@@ -1,7 +1,7 @@
 {
-  "name": "project-created-function",
+  "name": "project-committed-function",
   "version": "1.0.0",
-  "description": "project created AWS Lambda function",
+  "description": "project committed AWS Lambda function",
   "main": "index.js",
   "dependencies": {
     "traverson": "^3.2.0",
@@ -12,12 +12,12 @@
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kbastani/project-created-function.git"
+    "url": "git+https://github.com/kbastani/project-committed-function.git"
   },
   "author": "kbastani",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kbastani/project-created-function/issues"
+    "url": "https://github.com/kbastani/project-committed-function/issues"
   },
-  "homepage": "https://github.com/kbastani/project-created-function#readme"
+  "homepage": "https://github.com/kbastani/project-committed-function#readme"
 }
