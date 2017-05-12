@@ -1,8 +1,9 @@
-name: github-stream-core
+name: github-event-core
 memory: 1024M
 instances: 1
-path: ./target/service-core-0.0.1-SNAPSHOT.jar
+path: ./target/github-event-core-0.0.1-SNAPSHOT.jar
 disk_quota: 1024M
-host: github-stream-core
+host: github-event-core
 services:
- - project-core-db
+ - github-core-db
+ - github-rabbit

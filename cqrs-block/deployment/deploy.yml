@@ -7,14 +7,14 @@ resources:
     uri: https://github.com/kbastani/service-block-samples
     branch: master
     paths:
-    - ./cqrs/cqrs-service-core
+    - ./cqrs-block/github-event-core
 - name: project-activated
   type: git
   source:
     uri: https://github.com/kbastani/service-block-samples
     branch: master
     paths:
-    - ./cqrs/functions/project-activated
+    - ./cqrs-block/functions/project-activated
 jobs:
 - name: cqrs-service-block-ci
   max_in_flight: 1
@@ -22,15 +22,15 @@ jobs:
   - get: service-core
     trigger: true
   - task: build
-    file: service-core/cqrs/deployment/tasks/build-core.yml
+    file: service-core/cqrs-block/deployment/tasks/build-core.yml
   - task: deployment
-    file: service-core/cqrs/deployment/tasks/deploy-core.yml
+    file: service-core/cqrs-block/deployment/tasks/deploy-core.yml
     params:
       path: artifact/github-stream-core.jar
       current_app_name: cqrs-service-block
       host: github-stream-core
       domain: cfapps.io
-      manifest: service-core/cqrs/cqrs-service-core/manifest.yml
+      manifest: service-core/cqrs-block/github-event-core/manifest.yml
       api: {{pws-api}}
       username: {{pws-username}}
       password: {{pws-password}}
@@ -59,14 +59,14 @@ jobs:
         args:
         - -exc
         - |
-          cp -r project-activated/cqrs/functions/* functions \
-          && cp -r project-activated/cqrs/deployment/scripts/* scripts
+          cp -r project-activated/cqrs-block/functions/* functions \
+          && cp -r project-activated/cqrs-block/deployment/scripts/* scripts
   - task: package
-    file: project-activated/cqrs/deployment/tasks/build-js-function.yml
+    file: project-activated/cqrs-block/deployment/tasks/build-js-function.yml
     params:
       function_name: project-activated
   - task: deploy
-    file: project-activated/cqrs/deployment/tasks/deploy-js-function.yml
+    file: project-activated/cqrs-block/deployment/tasks/deploy-js-function.yml
     params:
       function_name: project-activated
       aws_default_region: {{aws-region}}
@@ -80,38 +80,3 @@ jobs:
       password: {{pws-password}}
       organization: {{pws-org}}
       space: {{pws-space}}
-- name: project-suspended-ci
-  max_in_flight: 1
-  plan:
-  - get: project-suspended
-    trigger: true
-  - task: prepare
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source: {repository: busybox}
-      inputs:
-        - name: project-suspended
-      outputs:
-        - name: functions
-        - name: scripts
-      run:
-        path: sh
-        args:
-        - -exc
-        - |
-          cp -r project-suspended/cqrs/functions/* functions \
-          && cp -r project-suspended/cqrs/deployment/scripts/* scripts
-  - task: package
-    file: project-suspended/cqrs/deployment/tasks/build-js-function.yml
-    params:
-      function_name: project-suspended
-  - task: deploy
-    file: project-suspended/cqrs/deployment/tasks/deploy-js-function.yml
-    params:
-      function_name: project-suspended
-      aws_default_region: {{aws-region}}
-      aws_access_key_id: {{aws-access-key-id}}
-      aws_secret_access_key: {{aws-access-key-secret}}
-      bucket_name: {{s3-bucket}}

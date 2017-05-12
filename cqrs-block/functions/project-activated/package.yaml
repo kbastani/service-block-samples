@@ -1,8 +1,8 @@
 ﻿AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
-Description: Account activated handler
+Description: project activated handler
 Resources:
-  accountActivated:
+  projectActivated:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: index.handler
@@ -20,7 +20,7 @@ Resources:
         Api1:
           Type: Api
           Properties:
-            Path: /accountActivated
+            Path: /projectActivated
             Method: ANY
 Parameters:
   ServiceCredentials:

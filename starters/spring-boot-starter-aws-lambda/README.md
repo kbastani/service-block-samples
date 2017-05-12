@@ -41,15 +41,15 @@ You can also set the properties using command line arguments with the Maven Spri
 $ mvn spring-boot:run -Drun.arguments="--amazon.aws.access-key-id=ABCDEFG,--amazon.aws.access-key-secret=ZYXKGFWG"
 ```
 
-You can now begin to invoke AWS Lambda functions from your AWS account. The next thing you'll need to do is to define an interface of lambda function references to invoke.
+You can now begin to invoke AWS Lambda functions from your AWS project. The next thing you'll need to do is to define an interface of lambda function references to invoke.
 
 ```java
 public interface LambdaFunctions {
     
-    @LambdaFunction(functionName="account-created-13P0EDGLDE399", logType = LogType.Tail)
+    @LambdaFunction(functionName="project-created-13P0EDGLDE399", logType = LogType.Tail)
     Account accountCreated(AccountEvent event);
 
-    @LambdaFunction(functionName="account-activated-1P0I6FTFCMHKH", logType = LogType.Tail)
+    @LambdaFunction(functionName="project-activated-1P0I6FTFCMHKH", logType = LogType.Tail)
     Account accountActivated(AccountEvent event);
 }
 ```
@@ -81,10 +81,10 @@ We can now inject the `LambdaFunctions` as a dependency into other Spring compon
         this.lambdaFunctions = lambdaFunctions;
     }
     
-    public Account createAccount(Account account) {
+    public Account createAccount(Account project) {
         // Trigger the new event by invoking AWS lambda
         Account result = lambdaFunctions
-            .accountCreated(new AccountEvent(account, EventType.ACCOUNT_CREATED));
+            .accountCreated(new AccountEvent(project, EventType.ACCOUNT_CREATED));
             
         return result;
     }

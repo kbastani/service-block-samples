@@ -16,4 +16,4 @@ run:
   - |
     cd service-core \
     && mvn clean package -DskipDockerBuild \
-    && mv cqrs-service-block/service-core/target/service-core*.jar ../artifact/github-stream-core.jar
+    && mv cqrs-block/github-event-core/target/github-event-core*.jar ../artifact/github-event-core.jar
