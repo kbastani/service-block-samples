@@ -8,13 +8,13 @@ resources:
     branch: master
     paths:
     - ./cqrs-block/github-event-core
-- name: project-activated
+- name: project-created
   type: git
   source:
     uri: https://github.com/kbastani/service-block-samples
     branch: master
     paths:
-    - ./cqrs-block/functions/project-activated
+    - ./cqrs-block/functions/project-created
 jobs:
 - name: cqrs-service-block-ci
   max_in_flight: 1
@@ -26,9 +26,9 @@ jobs:
   - task: deployment
     file: service-core/cqrs-block/deployment/tasks/deploy-core.yml
     params:
-      path: artifact/github-stream-core.jar
-      current_app_name: cqrs-service-block
-      host: github-stream-core
+      path: artifact/github-event-core.jar
+      current_app_name: github-event-core
+      host: github-event-core
       domain: cfapps.io
       manifest: service-core/cqrs-block/github-event-core/manifest.yml
       api: {{pws-api}}
@@ -38,10 +38,10 @@ jobs:
       aws_access_key_id: {{aws-access-key-id}}
       aws_access_key_secret: {{aws-access-key-secret}}
       space: {{pws-space}}
-- name: project-activated-ci
+- name: project-created-ci
   max_in_flight: 1
   plan:
-  - get: project-activated
+  - get: project-created
     trigger: true
   - task: prepare
     config:
@@ -50,7 +50,7 @@ jobs:
         type: docker-image
         source: {repository: busybox}
       inputs:
-        - name: project-activated
+        - name: project-created
       outputs:
         - name: functions
         - name: scripts
@@ -59,16 +59,16 @@ jobs:
         args:
         - -exc
         - |
-          cp -r project-activated/cqrs-block/functions/* functions \
-          && cp -r project-activated/cqrs-block/deployment/scripts/* scripts
+          cp -r project-created/cqrs-block/functions/* functions \
+          && cp -r project-created/cqrs-block/deployment/scripts/* scripts
   - task: package
-    file: project-activated/cqrs-block/deployment/tasks/build-js-function.yml
+    file: project-created/cqrs-block/deployment/tasks/build-js-function.yml
     params:
-      function_name: project-activated
+      function_name: project-created
   - task: deploy
-    file: project-activated/cqrs-block/deployment/tasks/deploy-js-function.yml
+    file: project-created/cqrs-block/deployment/tasks/deploy-js-function.yml
     params:
-      function_name: project-activated
+      function_name: project-created
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-access-key-secret}}
