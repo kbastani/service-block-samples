@@ -1,0 +1,28 @@
+﻿AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: project created handler
+Resources:
+  projectCreated:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs4.3
+      FunctionName: project-created
+      CodeUri: .
+      Description: Responds to an project creation event
+      MemorySize: 128
+      Timeout: 10
+      Environment:
+        Variables:
+         SERVICE_CREDENTIALS: !Ref ServiceCredentials
+      Role: 'arn:aws:iam::194021864310:role/service-role/public'
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /projectCreated
+            Method: ANY
+Parameters:
+  ServiceCredentials:
+    Type: "String"
+    Default: "{}"

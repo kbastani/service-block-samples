@@ -12,6 +12,9 @@ public interface FunctionService {
     @LambdaFunction(functionName="project-created", logType = LogType.Tail)
     Project projectCreated(Map event);
 
+    @LambdaFunction(functionName="project-committed", logType = LogType.Tail)
+    Project projectCommitted(Map event);
+
     /* Query handler functions */
     @LambdaFunction(functionName="tight-coupling-query", logType = LogType.Tail)
     Map<String, Object> tightCouplingQuery(Map event);

@@ -121,14 +121,11 @@ public class ProjectController {
                 .orElseThrow(() -> new RuntimeException("The project could not be found"));
     }
 
-    @RequestMapping(path = "/projects/{id}/commands/activate")
-    public ResponseEntity activate(@PathVariable Long id) {
-        return Optional.ofNullable(projectRepository.findOne(id))
-                .map(a -> eventService
-                        .apply(new ProjectEvent(ProjectEventType.CREATED_EVENT, id)))
-                .map(this::getProjectResource)
-                .map(e -> new ResponseEntity<>(e, HttpStatus.OK))
-                .orElseThrow(() -> new RuntimeException("The command could not be applied"));
+    @PostMapping(path = "/projects/{id}/commands/commit")
+    public ResponseEntity commitProject(@PathVariable Long id, @RequestBody Commit commit) {
+        return Optional.ofNullable(appendCommitResource(id, commit))
+                .map(e -> new ResponseEntity<>(e, HttpStatus.CREATED))
+                .orElseThrow(() -> new RuntimeException("Append project commit failed"));
     }
 
     /**

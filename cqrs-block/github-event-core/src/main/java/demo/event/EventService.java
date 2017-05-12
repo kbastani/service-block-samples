@@ -61,7 +61,8 @@ public class EventService {
                         .apply(getProjectEventMap(projectEvent, events, project));
                 break;
             case COMMIT_EVENT:
-                commandStream.handle(projectEvent);
+                result = commandHandlers.getCommitProject()
+                        .apply(getProjectEventMap(projectEvent, events, project));
                 break;
         }
 
@@ -75,6 +76,8 @@ public class EventService {
 
             project.setStatus(result.getPayload().getStatus());
 
+            projectEvent.setEntity(result.getPayload());
+
             log.info(result.getPayload());
         }
 
@@ -82,6 +85,8 @@ public class EventService {
         addEvent(projectEvent, project);
         project = projectRepository.save(project);
         projectRepository.flush();
+
+        commandStream.handle(projectEvent);
 
         return project;
     }
