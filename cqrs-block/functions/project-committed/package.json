@@ -4,9 +4,9 @@
   "description": "project committed AWS Lambda function",
   "main": "index.js",
   "dependencies": {
-    "traverson": "^3.2.0",
-    "traverson-hal": "^4.1.1",
-    "mongodb": "^2.2.0"
+    "mongodb": "^2.2.0",
+    "md5": "^2.2.1",
+    "sync": "^0.2.5"
   },
   "devDependencies": {},
   "scripts": {},
