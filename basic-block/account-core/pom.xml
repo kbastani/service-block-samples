@@ -11,7 +11,7 @@
 
     <parent>
         <groupId>io.serviceblock</groupId>
-        <artifactId>basic-service-block</artifactId>
+        <artifactId>basic-block</artifactId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
