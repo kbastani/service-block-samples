@@ -30,10 +30,10 @@ exports.handler = (event, context, callback) => {
  */
 function processEvent(event, context, callback, db) {
 
-    // Apply the event to the account
-    var applyAccountEvent = function () {
+    // Apply the event to the project
+    var applyProjectEvent = function () {
         var events = event.eventLog;
-        var account = event.account;
+        var project = event.project;
 
         var lastEvent;
 
@@ -41,11 +41,11 @@ function processEvent(event, context, callback, db) {
             lastEvent = events[0];
         }
 
-        if ((lastEvent != null || lastEvent != undefined) ? lastEvent.type != "ACCOUNT_ACTIVATED" : true) {
-            account.status = "ACCOUNT_ACTIVATED";
-            callback(null, account);
+        if ((lastEvent != null || lastEvent != undefined) ? lastEvent.type != "PROJECT_CREATED" : true) {
+            project.status = "PROJECT_CREATED";
+            callback(null, project);
         } else {
-            var error = new Error("Account already activated");
+            var error = new Error("Project already created");
             callback(error);
         }
     };
@@ -54,7 +54,7 @@ function processEvent(event, context, callback, db) {
     db.collection('inserts').insertOne(event, function (err, r) {
         if (err == null) {
             console.log(r);
-            applyAccountEvent();
+            applyProjectEvent();
         } else {
             console.error(err);
             callback(null, err);

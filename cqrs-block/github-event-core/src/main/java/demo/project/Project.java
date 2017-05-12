@@ -24,7 +24,7 @@ public class Project extends AbstractEntity {
     private List<Commit> commits = new ArrayList<>();
 
     public Project() {
-        status = ProjectStatus.PROJECT_ACTIVATED;
+        status = ProjectStatus.PROJECT_CREATED;
     }
 
     public Project(String name) {

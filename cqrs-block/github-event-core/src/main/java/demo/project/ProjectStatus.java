@@ -10,6 +10,6 @@ import demo.project.event.ProjectEvent;
  * @author kbastani
  */
 public enum ProjectStatus {
-    PROJECT_ACTIVATED,
+    PROJECT_CREATED,
     PROJECT_SUSPENDED
 }

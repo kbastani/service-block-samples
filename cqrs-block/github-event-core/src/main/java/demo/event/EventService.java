@@ -57,7 +57,8 @@ public class EventService {
         // Route requests to serverless functions
         switch (projectEvent.getType()) {
             case CREATED_EVENT:
-                commandStream.handle(projectEvent);
+                result = commandHandlers.getCreateProject()
+                        .apply(getProjectEventMap(projectEvent, events, project));
                 break;
             case COMMIT_EVENT:
                 commandStream.handle(projectEvent);
