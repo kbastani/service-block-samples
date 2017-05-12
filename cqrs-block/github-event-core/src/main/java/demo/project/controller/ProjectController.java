@@ -282,21 +282,13 @@ public class ProjectController {
 
         CommandResources commandResources = new CommandResources();
 
-        // Add activate command link
-        commandResources.add(linkTo(ProjectController.class)
-                .slash("projects")
-                .slash(id)
-                .slash("commands")
-                .slash("activate")
-                .withRel("activate"));
-
         // Add suspend command link
         commandResources.add(linkTo(ProjectController.class)
                 .slash("projects")
                 .slash(id)
                 .slash("commands")
-                .slash("suspend")
-                .withRel("suspend"));
+                .slash("commit")
+                .withRel("commit"));
 
         return new Resource<>(commandResources);
     }
