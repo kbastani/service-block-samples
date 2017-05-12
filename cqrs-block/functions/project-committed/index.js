@@ -20,7 +20,7 @@ exports.handler = (event, context, callback) => {
 
     // Process the event with Cloud Foundry service connections
     withServices(function (db, err) {
-        if(err != null) {
+        if (err != null) {
             callback(null, err);
         } else {
             processEvent(event, context, callback, db);
@@ -38,80 +38,79 @@ exports.handler = (event, context, callback) => {
  */
 function processEvent(event, context, callback, db) {
 
-    var events = event.eventLog;
+    // Get the project details
     var project = event.project;
+
+    // Get the files for this commit
+    var files = event.payload.files.map(function (item) {
+        return item.fileName.toLowerCase();
+    });
+
     var col = db.collection('query');
 
-    // Apply the event to the project
-    var applyProjectEvent = function () {
-        var lastEvent;
-
-        if (events.length > 0) {
-            lastEvent = events[0];
-        }
-
-        callback(null, project);
-    };
-
     function updateViewForSet(fileNames, complete) {
-
         // Generate a unique hash of the composite filename key
         // [VIEW_NAME]_[PROJECT_ID]_[K_COMBINATION_HASH]
-        var compositeKey = [viewName, project.projectId, md5(fileNames.sort().concat("_"))].join("_");
+        var compositeKey = [viewName, project.projectId, md5(fileNames.sort().join("_"))].join("_");
         var tightCouplingEvent = false;
 
-        col.findAndModify({
-            query: compositeKey,
-            update: {
-                $setOnInsert: {
+        col.findOneAndUpdate({_id: compositeKey},
+            {
+                $set: {
                     model: {
                         projectId: project.projectId,
-                        matches: 0,
+                        matches: 1,
                         captures: 0,
                         fileIds: fileNames,
                         createdAt: new Date(),
                         updatedAt: new Date()
-                    }
+                    },
+                    viewName: viewName
                 }
-            },
-            new: true,
-            upsert: true
-        }, function (err, r) {
-            if (!err) {
-                var tcq = r.result;
-                tcq.matches = tcq.matches + 1;
+            }, {
+                new: false,
+                upsert: true,
+                returnOriginal: true
+            }, function (err, r) {
+                if (!err) {
+                    if (r.value != null) {
+                        var tcq = r.value;
+                        tcq.model.matches = tcq.model.matches + 1;
 
-                // Check if matches exceeds threshold
-                if (tcq.matches >= matchThreshold) {
-                    // Reset counter and fire a new tight coupling event
-                    tcq.matches = 0;
-                    tcq.captures = tcq.captures + 1;
+                        // Check if matches exceeds threshold
+                        if (tcq.model.matches >= matchThreshold) {
+                            // Reset counter and fire a new tight coupling event
+                            tcq.model.matches = 0;
+                            tcq.model.captures = tcq.model.captures + 1;
 
-                    tightCouplingEvent = true;
-                }
+                            tightCouplingEvent = true;
+                        }
 
-                col.updateOne(compositeKey, {$set: tcq}, function (err, r) {
-                    if (!err) {
-                        complete(null, r.result);
+                        col.findOneAndUpdate({_id: compositeKey}, {
+                            $set: {
+                                model: tcq.model,
+                                updatedAt: new Date()
+                            }
+                        }, {returnOriginal: false, upsert: false}, function (err, r) {
+                            complete(null, !err ? r.value : err);
+                        });
                     } else {
-                        complete(null, err);
+                        col.find({_id: compositeKey}).limit(1).next(function (err, doc) {
+                            complete(null, !err ? doc : err);
+                        });
                     }
-                });
-            } else {
-                complete(null, err);
-            }
-        });
-
-        Sync(function () {
-            var tce = updateViewForSet.future(null, ["s.java", "a.java"]);
-            console.log(tce);
-            applyProjectEvent();
-        });
+                } else {
+                    complete(null, err);
+                }
+            });
     }
 
-    // updateViewForSet(event.payload.files.map(function(item) {
-    //     return item.fileName;
-    // }));
+    Sync(function () {
+        var task;
+        // Synchronously update the view using the event payload
+        updateViewForSet(files, task = new Sync.Future());
+        callback(null, task.result);
+    });
 }
 
 /**

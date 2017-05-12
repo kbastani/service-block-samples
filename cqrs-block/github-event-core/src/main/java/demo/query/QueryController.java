@@ -18,10 +18,17 @@ public class QueryController {
         this.queryRepository = queryRepository;
     }
 
-    @RequestMapping(path = "/queries/{view}/{id}")
-    public ResponseEntity getQueryView(@PathVariable String view, @PathVariable String id) {
-        return Optional.ofNullable(queryRepository.findOne(String.format("%s_%s", view, id)))
+    @RequestMapping(path = "/queries/{viewName}/{id}")
+    public ResponseEntity getQueryView(@PathVariable String viewName, @PathVariable String id) {
+        return Optional.ofNullable(queryRepository.findOne(String.format("%s_%s", viewName, id)))
                 .map(e -> new ResponseEntity<>(e.getModel(), HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @RequestMapping(path = "/queries/{viewName}")
+    public ResponseEntity getQueryViews(@PathVariable String viewName) {
+        return Optional.ofNullable(queryRepository.findQueryModelsByViewName(viewName))
+                .map(e -> new ResponseEntity<>(e.stream().map(QueryModel::getModel), HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

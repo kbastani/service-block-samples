@@ -11,6 +11,8 @@ public class QueryModel {
     @Id
     private String id;
 
+    private String viewName;
+
     private Map<String, Object> model;
 
     public String getId() {
@@ -29,4 +31,11 @@ public class QueryModel {
         this.model = model;
     }
 
+    public String getViewName() {
+        return viewName;
+    }
+
+    public void setViewName(String viewName) {
+        this.viewName = viewName;
+    }
 }
