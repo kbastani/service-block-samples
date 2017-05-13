@@ -1,15 +1,15 @@
 ﻿AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
-Description: project committed handler
+Description: Deployment pipeline for the tight coupling query function
 Resources:
-  projectCommitted:
+  tightCouplingQuery:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: index.handler
       Runtime: nodejs4.3
-      FunctionName: project-committed
+      FunctionName: tight-coupling-query
       CodeUri: .
-      Description: Responds to an project committed event
+      Description: Event sources a view to show the tight coupling of commits
       MemorySize: 128
       Timeout: 10
       Environment:
@@ -20,7 +20,7 @@ Resources:
         Api1:
           Type: Api
           Properties:
-            Path: /projectCommitted
+            Path: /tightCouplingQuery
             Method: ANY
 Parameters:
   ServiceCredentials:

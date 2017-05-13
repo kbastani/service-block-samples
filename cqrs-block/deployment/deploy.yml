@@ -22,6 +22,13 @@ resources:
     branch: master
     paths:
     - ./cqrs-block/functions/project-committed
+- name: tight-coupling-query
+  type: git
+  source:
+    uri: https://github.com/kbastani/service-block-samples
+    branch: master
+    paths:
+    - ./cqrs-block/functions/tight-coupling-query
 jobs:
 - name: cqrs-service-block-ci
   max_in_flight: 1
@@ -118,6 +125,48 @@ jobs:
     file: project-committed/cqrs-block/deployment/tasks/deploy-js-function.yml
     params:
       function_name: project-committed
+      aws_default_region: {{aws-region}}
+      aws_access_key_id: {{aws-access-key-id}}
+      aws_secret_access_key: {{aws-access-key-secret}}
+      bucket_name: {{s3-bucket}}
+      service_instance: {{pws-mysql-service}}
+      service_key: {{pws-mysql-service-key}}
+      api: {{pws-api}}
+      username: {{pws-username}}
+      password: {{pws-password}}
+      organization: {{pws-org}}
+      space: {{pws-space}}
+- name: tight-coupling-query-ci
+  max_in_flight: 1
+  plan:
+  - get: tight-coupling-query
+    trigger: true
+  - task: prepare
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: busybox}
+      inputs:
+        - name: tight-coupling-query
+      outputs:
+        - name: functions
+        - name: scripts
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cp -r tight-coupling-query/cqrs-block/functions/* functions \
+          && cp -r tight-coupling-query/cqrs-block/deployment/scripts/* scripts
+  - task: package
+    file: tight-coupling-query/cqrs-block/deployment/tasks/build-js-function.yml
+    params:
+      function_name: tight-coupling-query
+  - task: deploy
+    file: tight-coupling-query/cqrs-block/deployment/tasks/deploy-js-function.yml
+    params:
+      function_name: tight-coupling-query
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-access-key-secret}}

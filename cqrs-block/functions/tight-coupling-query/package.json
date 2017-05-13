@@ -1,0 +1,23 @@
+{
+  "name": "tight-coupling-query-function",
+  "version": "1.0.0",
+  "description": "Builds a CQRS view for tight coupling of files committed to GitHub",
+  "main": "index.js",
+  "dependencies": {
+    "mongodb": "^2.2.0",
+    "md5": "^2.2.1",
+    "sync": "^0.2.5"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kbastani/tight-coupling-query-function.git"
+  },
+  "author": "kbastani",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kbastani/tight-coupling-query-function/issues"
+  },
+  "homepage": "https://github.com/kbastani/tight-coupling-query-function#readme"
+}
