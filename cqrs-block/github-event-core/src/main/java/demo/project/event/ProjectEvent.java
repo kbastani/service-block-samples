@@ -123,4 +123,17 @@ public class ProjectEvent {
     public void setLastModified(Long lastModified) {
         this.lastModified = lastModified;
     }
+
+    @Override
+    public String toString() {
+        return "ProjectEvent{" +
+                "eventId=" + eventId +
+                ", type=" + type +
+                ", entity=" + entity +
+                ", payload=" + payload +
+                ", projectId=" + projectId +
+                ", createdAt=" + createdAt +
+                ", lastModified=" + lastModified +
+                '}';
+    }
 }

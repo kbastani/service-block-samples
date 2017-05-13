@@ -4,6 +4,7 @@ import demo.command.CreateProject;
 import demo.config.AwsLambdaConfig;
 import demo.function.FunctionService;
 import demo.model.LambdaResponse;
+import demo.project.Project;
 import demo.project.event.ProjectEvent;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -23,17 +24,17 @@ public class TightCouplingQuery {
 
     public LambdaResponse<Map<String, Object>> apply(ProjectEvent event) {
         try {
-            return new LambdaResponse<>(functionService.tightCouplingQuery(getProjectEventMap(event)));
+            return new LambdaResponse<>(functionService.tightCouplingQuery(getProjectEventMap(event, event.getEntity())));
         } catch (Exception ex) {
             log.error("Error invoking AWS Lambda function", ex);
             throw ex;
         }
     }
 
-    private Map<String, Object> getProjectEventMap(ProjectEvent event) {
+    private Map<String, Object> getProjectEventMap(ProjectEvent event, Project project) {
         Map<String, Object> eventMap = new HashMap<>();
-        eventMap.put("event", event);
-        eventMap.put("project", event.getEntity());
+        eventMap.put("projectEvent", event);
+        eventMap.put("project", new Project(event.getProjectId()));
         return eventMap;
     }
 }

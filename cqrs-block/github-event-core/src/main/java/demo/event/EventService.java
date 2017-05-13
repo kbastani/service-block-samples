@@ -40,6 +40,9 @@ public class EventService {
 
         Project project = projectRepository.findOne(projectEvent.getProjectId());
 
+        // Cache payload before handling the event
+        Map<String, Object> payload = projectEvent.getPayload();
+
         if (project == null)
             project = projectEvent.getEntity();
 
@@ -86,6 +89,8 @@ public class EventService {
         projectRepository.flush();
 
         // Send event to the command stream for query handlers to build materialized views
+        projectEvent.setPayload(payload);
+        projectEvent.setProjectId(project.getIdentity());
         commandStream.handle(projectEvent);
 
         return project;

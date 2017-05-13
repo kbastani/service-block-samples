@@ -6,12 +6,11 @@ import demo.config.AwsLambdaConfig;
 import demo.function.FunctionService;
 import demo.model.LambdaResponse;
 import demo.project.Project;
-import demo.project.ProjectStatus;
-import demo.project.event.ProjectEvent;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.netflix.hystrix.contrib.javanica.conf.HystrixPropertiesManager.EXECUTION_TIMEOUT_ENABLED;
 
@@ -32,17 +31,17 @@ public class CommitProject {
         try {
             return new LambdaResponse<>(functionService.projectCommitted(eventMap));
         } catch (Exception ex) {
-            log.error("Error invoking AWS Lambda function", ex);
-            throw ex;
+            if (Objects.equals(ex.getMessage(), "Project is in an invalid state")) {
+                return new LambdaResponse<>(ex, null);
+            } else {
+                log.error("Error invoking AWS Lambda function", ex);
+                throw ex;
+            }
         }
     }
 
     public LambdaResponse<Project> projectCommittedFallback(Map eventMap) {
         Project project = (Project) eventMap.get("project");
-        ProjectEvent projectEvent = (ProjectEvent) eventMap.get("projectEvent");
-
-        project.setStatus(ProjectStatus.valueOf(projectEvent.getType().toString()));
-
         return new LambdaResponse<>(null, project);
     }
 }

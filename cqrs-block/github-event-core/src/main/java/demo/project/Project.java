@@ -32,6 +32,10 @@ public class Project extends AbstractEntity {
         this.name = name;
     }
 
+    public Project(Long id) {
+        this.id = id;
+    }
+
     @JsonProperty("projectId")
     public Long getIdentity() {
         return this.id;
