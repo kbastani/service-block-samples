@@ -7,3 +7,4 @@ host: github-event-core
 services:
  - github-core-db
  - github-rabbit
+ - cqrs-lambda-db

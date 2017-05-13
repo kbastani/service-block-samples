@@ -15,6 +15,10 @@ public class QueryModel {
 
     private Map<String, Object> model;
 
+    public QueryModel(String viewName) {
+        this.viewName = viewName;
+    }
+
     public String getId() {
         return id;
     }

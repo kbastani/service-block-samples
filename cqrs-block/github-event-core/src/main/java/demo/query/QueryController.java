@@ -28,7 +28,7 @@ public class QueryController {
     @RequestMapping(path = "/queries/{viewName}")
     public ResponseEntity getQueryViews(@PathVariable String viewName) {
         return Optional.ofNullable(queryRepository.findQueryModelsByViewName(viewName))
-                .map(e -> new ResponseEntity<>(e.stream().map(QueryModel::getModel), HttpStatus.OK))
+                .map(e -> new ResponseEntity<>(e, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

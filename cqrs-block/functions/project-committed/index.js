@@ -5,7 +5,7 @@ var md5 = require('md5');
 var Sync = require('sync');
 
 // This must be unique to each materialized view
-var viewName = "TCQ";
+var viewName = "tcq";
 
 // The match threshold for generating a new tight coupling event
 var matchThreshold = 2;
@@ -40,9 +40,10 @@ function processEvent(event, context, callback, db) {
 
     // Get the project details
     var project = event.project;
+    var commit = event.projectEvent.payload.commit;
 
     // Get the files for this commit
-    var files = event.payload.files.map(function (item) {
+    var files = commit.files.map(function (item) {
         return item.fileName.toLowerCase();
     });
 
