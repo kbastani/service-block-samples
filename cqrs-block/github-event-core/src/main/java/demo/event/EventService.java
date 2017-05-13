@@ -54,19 +54,19 @@ public class EventService {
 
         LambdaResponse<Project> result = null;
 
-        // Route requests to serverless functions
+        // Map the event type to the corresponding command handler
         switch (projectEvent.getType()) {
             case CREATED_EVENT:
                 result = commandHandlers.getCreateProject()
                         .apply(getProjectEventMap(projectEvent, events, project));
                 break;
             case COMMIT_EVENT:
-                commandStream.handle(projectEvent);
                 result = commandHandlers.getCommitProject()
                         .apply(getProjectEventMap(projectEvent, events, project));
                 break;
         }
 
+        // A response from Lambda was returned
         if (result != null) {
             if (result.getException() != null) {
                 throw new RuntimeException(result.getException().getMessage(),
@@ -74,9 +74,7 @@ public class EventService {
             }
 
             Assert.notNull(result.getPayload(), "Lambda response payload must not be null");
-
             project.setStatus(result.getPayload().getStatus());
-
             projectEvent.setEntity(result.getPayload());
 
             log.info(result.getPayload());
@@ -87,7 +85,8 @@ public class EventService {
         project = projectRepository.save(project);
         projectRepository.flush();
 
-
+        // Send event to the command stream for query handlers to build materialized views
+        commandStream.handle(projectEvent);
 
         return project;
     }

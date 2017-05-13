@@ -33,6 +33,7 @@ public class TightCouplingQuery {
     private Map<String, Object> getProjectEventMap(ProjectEvent event) {
         Map<String, Object> eventMap = new HashMap<>();
         eventMap.put("event", event);
+        eventMap.put("project", event.getEntity());
         return eventMap;
     }
 }

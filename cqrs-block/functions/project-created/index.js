@@ -1,10 +1,8 @@
-'use strict'
-
 exports.handler = (event, context, callback) => {
-    processEvent(event, context, callback, db);
+    processEvent(event, context, callback);
 };
 
-function processEvent(event, context, callback, db) {
+function processEvent(event, context, callback) {
 
     // Apply the event to the project
     var applyProjectEvent = function () {
