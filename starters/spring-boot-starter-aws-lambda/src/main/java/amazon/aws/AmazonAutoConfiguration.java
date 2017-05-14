@@ -21,8 +21,6 @@ public class AmazonAutoConfiguration {
 
     @Bean
     protected AWSLambdaConfigurerAdapter lambdaAdapter() {
-        return new AWSLambdaConfigurerAdapter(
-                amazonProperties.getAws().getAccessKeyId(),
-                amazonProperties.getAws().getAccessKeySecret());
+        return new AWSLambdaConfigurerAdapter(amazonProperties);
     }
 }

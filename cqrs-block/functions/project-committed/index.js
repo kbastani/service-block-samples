@@ -15,7 +15,7 @@ function processEvent(event, context, callback) {
             lastEvent = events[0];
         }
 
-        if ((lastEvent != null || lastEvent != undefined) ? lastEvent.type == "PROJECT_CREATED" : false) {
+        if ((lastEvent != null || lastEvent != undefined) ? lastEvent.type != null : false) {
             callback(null, project);
         } else {
             var error = new Error("Project is in an invalid state");
