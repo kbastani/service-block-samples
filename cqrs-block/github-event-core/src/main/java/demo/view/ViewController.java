@@ -1,4 +1,4 @@
-package demo.query;
+package demo.view;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,24 +10,24 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1")
-public class QueryController {
+public class ViewController {
 
-    private final QueryRepository queryRepository;
+    private final ViewRepository viewRepository;
 
-    public QueryController(QueryRepository queryRepository) {
-        this.queryRepository = queryRepository;
+    public ViewController(ViewRepository viewRepository) {
+        this.viewRepository = viewRepository;
     }
 
-    @RequestMapping(path = "/queries/{viewName}/{id}")
+    @RequestMapping(path = "/views/{viewName}/{id}")
     public ResponseEntity getQueryView(@PathVariable String viewName, @PathVariable String id) {
-        return Optional.ofNullable(queryRepository.findOne(String.format("%s_%s", viewName, id)))
+        return Optional.ofNullable(viewRepository.findOne(String.format("%s_%s", viewName, id)))
                 .map(e -> new ResponseEntity<>(e.getModel(), HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @RequestMapping(path = "/queries/{viewName}")
+    @RequestMapping(path = "/views/{viewName}")
     public ResponseEntity getQueryViews(@PathVariable String viewName) {
-        return Optional.ofNullable(queryRepository.findQueryModelsByViewName(viewName))
+        return Optional.ofNullable(viewRepository.findViewsByViewName(viewName))
                 .map(e -> new ResponseEntity<>(e, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

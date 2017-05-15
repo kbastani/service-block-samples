@@ -1,4 +1,4 @@
-package demo.query;
+package demo.view;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Map;
 
 @Document(collection = "query")
-public class QueryModel {
+public class View {
 
     @Id
     private String id;
@@ -15,7 +15,7 @@ public class QueryModel {
 
     private Map<String, Object> model;
 
-    public QueryModel(String viewName) {
+    public View(String viewName) {
         this.viewName = viewName;
     }
 

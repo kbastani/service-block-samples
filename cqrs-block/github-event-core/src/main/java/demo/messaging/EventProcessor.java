@@ -1,6 +1,6 @@
-package demo.event.messaging;
+package demo.messaging;
 
-import demo.function.QueryHandlers;
+import demo.project.query.ProjectQueries;
 import demo.project.event.ProjectEvent;
 import demo.project.event.ProjectEventType;
 import org.apache.log4j.Logger;
@@ -12,13 +12,13 @@ import org.springframework.messaging.Message;
 
 @Configuration
 @EnableBinding(Sink.class)
-public class QueryStream {
+public class EventProcessor {
 
     private final Logger log = Logger.getLogger(this.getClass());
-    private final QueryHandlers queryHandlers;
+    private final ProjectQueries projectQueries;
 
-    public QueryStream(QueryHandlers queryHandlers) {
-        this.queryHandlers = queryHandlers;
+    public EventProcessor(ProjectQueries projectQueries) {
+        this.projectQueries = projectQueries;
     }
 
     @StreamListener(value = Sink.INPUT)
@@ -31,7 +31,7 @@ public class QueryStream {
         // Invoke Lambda functions subscribing to project events
         // TODO: Create a registry that maps event types to Lambda functions
         if(projectEvent.getType() == ProjectEventType.COMMIT_EVENT) {
-            queryHandlers.getTightCouplingQuery().apply(projectEvent);
+            projectQueries.getTightCoupling().apply(projectEvent);
         }
     }
 }

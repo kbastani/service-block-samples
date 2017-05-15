@@ -1,13 +1,14 @@
 package demo.event;
 
-import demo.event.messaging.CommandStream;
-import demo.function.CommandHandlers;
-import demo.model.LambdaResponse;
+import demo.project.action.ProjectActions;
+import demo.function.model.LambdaResponse;
 import demo.project.Project;
 import demo.project.event.ProjectEvent;
 import demo.project.event.ProjectEventRepository;
 import demo.project.repository.ProjectRepository;
 import org.apache.log4j.Logger;
+import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -24,16 +25,16 @@ public class EventService {
     final private Logger log = Logger.getLogger(EventService.class);
     final private ProjectRepository projectRepository;
     final private ProjectEventRepository projectEventRepository;
-    final private CommandHandlers commandHandlers;
-    final private CommandStream commandStream;
+    final private ProjectActions projectActions;
+    final private Source source;
 
     public EventService(ProjectRepository projectRepository,
                         ProjectEventRepository projectEventRepository,
-                        CommandHandlers commandHandlers, CommandStream commandStream) {
+                        ProjectActions projectActions, Source source) {
         this.projectRepository = projectRepository;
         this.projectEventRepository = projectEventRepository;
-        this.commandHandlers = commandHandlers;
-        this.commandStream = commandStream;
+        this.projectActions = projectActions;
+        this.source = source;
     }
 
     public Project apply(ProjectEvent projectEvent) {
@@ -60,11 +61,11 @@ public class EventService {
         // Map the event type to the corresponding command handler
         switch (projectEvent.getType()) {
             case CREATED_EVENT:
-                result = commandHandlers.getCreateProject()
+                result = projectActions.getCreateProject()
                         .apply(getProjectEventMap(projectEvent, events, project));
                 break;
             case COMMIT_EVENT:
-                result = commandHandlers.getCommitProject()
+                result = projectActions.getCommitProject()
                         .apply(getProjectEventMap(projectEvent, events, project));
                 break;
         }
@@ -91,7 +92,7 @@ public class EventService {
         // Send event to the command stream for query handlers to build materialized views
         projectEvent.setPayload(payload);
         projectEvent.setProjectId(project.getIdentity());
-        commandStream.handle(projectEvent);
+        send(projectEvent);
 
         return project;
     }
@@ -108,5 +109,9 @@ public class EventService {
         eventMap.put("eventLog", events);
         eventMap.put("project", project);
         return eventMap;
+    }
+
+    public void send(ProjectEvent projectEvent) {
+        source.output().send(MessageBuilder.withPayload(projectEvent).build());
     }
 }

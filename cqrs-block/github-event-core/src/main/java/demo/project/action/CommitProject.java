@@ -1,10 +1,10 @@
-package demo.command;
+package demo.project.action;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import demo.config.AwsLambdaConfig;
 import demo.function.FunctionService;
-import demo.model.LambdaResponse;
+import demo.function.model.LambdaResponse;
 import demo.project.Project;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;

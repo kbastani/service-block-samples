@@ -1,9 +1,9 @@
-package demo.query;
+package demo.project.query;
 
-import demo.command.CreateProject;
+import demo.project.action.CreateProject;
 import demo.config.AwsLambdaConfig;
 import demo.function.FunctionService;
-import demo.model.LambdaResponse;
+import demo.function.model.LambdaResponse;
 import demo.project.Project;
 import demo.project.event.ProjectEvent;
 import org.apache.log4j.Logger;
@@ -13,12 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class TightCouplingQuery {
+public class TightCoupling {
 
     private final Logger log = Logger.getLogger(CreateProject.class);
     private final FunctionService functionService;
 
-    public TightCouplingQuery(AwsLambdaConfig.FunctionInvoker functionService) {
+    public TightCoupling(AwsLambdaConfig.FunctionInvoker functionService) {
         this.functionService = functionService.getFunctionService();
     }
 

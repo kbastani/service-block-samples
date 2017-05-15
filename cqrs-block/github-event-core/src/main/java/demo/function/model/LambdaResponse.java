@@ -1,4 +1,4 @@
-package demo.model;
+package demo.function.model;
 
 /**
  * The lambda response object containing a payload and/or error.

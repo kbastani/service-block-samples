@@ -1,6 +1,5 @@
-package demo.event.controller;
+package demo.event;
 
-import demo.event.EventService;
 import demo.project.event.ProjectEvent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
