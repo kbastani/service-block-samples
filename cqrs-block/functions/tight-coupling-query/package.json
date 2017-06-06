@@ -6,7 +6,7 @@
   "dependencies": {
     "mongodb": "^2.2.0",
     "md5": "^2.2.1",
-    "sync": "^0.2.5"
+    "sync": "0.2.5"
   },
   "devDependencies": {},
   "scripts": {},

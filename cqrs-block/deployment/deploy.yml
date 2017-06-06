@@ -51,6 +51,7 @@ jobs:
       organization: {{pws-org}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_access_key_secret: {{aws-access-key-secret}}
+      github_access_token: {{github-access-token}}
       space: {{pws-space}}
 - name: project-created-ci
   max_in_flight: 1
@@ -128,7 +129,6 @@ jobs:
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-access-key-secret}}
-      github_access_token: {{github-access-token}}
       bucket_name: {{s3-bucket}}
       service_instance: {{pws-mysql-service}}
       service_key: {{pws-mysql-service-key}}
