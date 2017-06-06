@@ -99,6 +99,7 @@ function queryHandler(col, key, callback) {
 
         if (view != null) {
             // Apply the update to the materialized view
+
             col.findOneAndUpdate({_id: key}, {
                 $set: {
                     model: updateView(view).model,
@@ -151,30 +152,32 @@ function processEvent(event, callback, db) {
 
     // Get the collection for query models
     var col = db.collection('query');
+    var batch = col.initializeUnorderedBulkOp();
 
     function updateViewForSet(fileNames, complete) {
         // Generates a unique MD5 hash for a combination of files
         var compositeKey = [OPTS.VIEW_NAME, project.projectId, md5(fileNames.sort().join("_"))].join("_");
 
         // Get or insert the materialized view for the composite key
-        col.findOneAndUpdate({_id: compositeKey}, {
+        batch.findOneAndUpdate({_id: compositeKey}, {
             $set: OPTS.TEMPLATE(project.projectId, fileNames)
         }, {
             new: false,
             upsert: true,
             returnOriginal: true
-        }, queryHandler(col, compositeKey, complete));
+        }, queryHandler(batch, compositeKey, complete));
     }
 
     // Views should be processed synchronously to prevent partial failure
     Sync(function () {
         // Synchronously update the view using the event payload
-        var result = fileGroups.map(function(fileSet) {
+        fileGroups.map(function(fileSet) {
             var task;
             updateViewForSet(fileSet, task = new Sync.Future());
             return task.result;
         });
-        callback(null, result);
+
+        batch.execute(callback);
     });
 }
 
