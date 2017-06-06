@@ -141,7 +141,9 @@ function processEvent(event, callback, db) {
     // Create power set of file combinations in this commit
     var fileGroups = powerSet(files.map(function (item, i) {
         return i;
-    })).map(function (fileSet) {
+    })).filter(function(items) {
+        return items.length >= 2;
+    }).map(function (fileSet) {
         return fileSet.map(function(i) {
             return files[i];
         });
@@ -150,33 +152,29 @@ function processEvent(event, callback, db) {
     // Get the collection for query models
     var col = db.collection('query');
 
-    function updateViewForSet(fileGroups, complete) {
+    function updateViewForSet(fileNames, complete) {
+        // Generates a unique MD5 hash for a combination of files
+        var compositeKey = [OPTS.VIEW_NAME, project.projectId, md5(fileNames.sort().join("_"))].join("_");
 
-        fileGroups.forEach(function(fileNames) {
-            // Generates a unique MD5 hash for a combination of files
-            var compositeKey = [OPTS.VIEW_NAME, project.projectId, md5(fileNames.sort().join("_"))].join("_");
-
-            // Get or insert the materialized view for the composite key
-            col.findOneAndUpdate({_id: compositeKey}, {
-                $set: OPTS.TEMPLATE(project.projectId, files)
-            }, {
-                new: false,
-                upsert: true,
-                returnOriginal: true
-            }, queryHandler(col, compositeKey, complete));
-        });
+        // Get or insert the materialized view for the composite key
+        col.findOneAndUpdate({_id: compositeKey}, {
+            $set: OPTS.TEMPLATE(project.projectId, fileNames)
+        }, {
+            new: false,
+            upsert: true,
+            returnOriginal: true
+        }, queryHandler(col, compositeKey, complete));
     }
 
     // Views should be processed synchronously to prevent partial failure
     Sync(function () {
-        var task;
-
         // Synchronously update the view using the event payload
-        fileGroups.forEach(function(fileNames) {
-            updateViewForSet(fileGroups, task = new Sync.Future());
+        var result = fileGroups.map(function(fileSet) {
+            var task;
+            updateViewForSet(fileSet, task = new Sync.Future());
+            return task.result;
         });
-
-        callback(null, task.result);
+        callback(null, result);
     });
 }
 
