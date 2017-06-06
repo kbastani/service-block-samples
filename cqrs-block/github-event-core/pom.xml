@@ -65,6 +65,11 @@
             <version>${spring-boot-starter-aws-lambda.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.serviceblock</groupId>
+            <artifactId>spring-boot-starter-github</artifactId>
+            <version>${spring-boot-starter-github.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-sts</artifactId>
             <version>${aws-java-sdk-sts.version}</version>

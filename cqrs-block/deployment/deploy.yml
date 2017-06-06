@@ -128,6 +128,7 @@ jobs:
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-access-key-secret}}
+      github_access_token: {{github-access-token}}
       bucket_name: {{s3-bucket}}
       service_instance: {{pws-mysql-service}}
       service_key: {{pws-mysql-service-key}}

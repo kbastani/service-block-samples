@@ -29,6 +29,11 @@ public class Commit extends AbstractEntity {
         status = CommitStatus.PUSHED;
     }
 
+    public Commit(List<File> files) {
+        this();
+        this.files = files;
+    }
+
     @JsonProperty("commitId")
     public Long getIdentity() {
         return this.id;

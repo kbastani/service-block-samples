@@ -138,6 +138,15 @@ function processEvent(event, callback, db) {
         return item.fileName.toLowerCase();
     });
 
+    // Create power set of file combinations in this commit
+    var fileGroups = powerSet(files.map(function (item, i) {
+        return i;
+    })).map(function (fileSet) {
+        return fileSet.map(function(i) {
+            return files[i];
+        });
+    });
+
     // Get the collection for query models
     var col = db.collection('query');
 
@@ -159,8 +168,10 @@ function processEvent(event, callback, db) {
     Sync(function () {
         var task;
         // Synchronously update the view using the event payload
-        updateViewForSet(files, task = new Sync.Future());
-        callback(null, task.result);
+        fileGroups.forEach(function(fileSet) {
+            updateViewForSet(fileSet, task = new Sync.Future());
+            callback(null, task.result);
+        });
     });
 }
 
@@ -194,4 +205,27 @@ function initializeDataSource(callback) {
     } else {
         callback(cachedDb);
     }
+}
+
+/**
+ * Power set implementation for JavaScript
+ *
+ * https://codereview.stackexchange.com/a/39747
+ * @param list
+ * @returns {Array}
+ */
+function powerSet(list) {
+    var set = [],
+        listSize = list.length,
+        combinationsCount = (1 << listSize);
+    for (var i = 1; i < combinationsCount; i++) {
+        var combination = [];
+        for (var j = 0; j < listSize; j++) {
+            if ((i & (1 << j))) {
+                combination.push(list[j]);
+            }
+        }
+        set.push(combination);
+    }
+    return set;
 }

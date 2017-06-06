@@ -30,6 +30,8 @@ amazon:
 ribbon:
   ReadTimeout: 30000
   ConnectTimeout: 30000
+github:
+  access-token: replace
 ---
 spring:
   profiles: test
@@ -59,6 +61,8 @@ amazon:
   aws:
     access-key-id: ${AMAZON_AWS_ACCESS_KEY_ID:replace}
     access-key-secret: ${AMAZON_AWS_ACCESS_KEY_SECRET:replace}
+github:
+  access-token: ${GITHUB_ACCESS_TOKEN:replace}
 eureka:
   instance:
     hostname: ${vcap.application.uris[0]:localhost}

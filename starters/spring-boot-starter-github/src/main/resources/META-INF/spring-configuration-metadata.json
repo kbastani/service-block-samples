@@ -1,0 +1,9 @@
+{
+  "groups": [
+    {
+      "name": "github",
+      "type": "github.GitHubProperties",
+      "sourceType": "github.GitHubProperties"
+    }
+  ]
+}

@@ -20,6 +20,11 @@ public class File extends AbstractEntity {
         status = FileStatus.CHANGED;
     }
 
+    public File(String fileName) {
+        this();
+        this.fileName = fileName;
+    }
+
     @JsonProperty("fileId")
     public Long getIdentity() {
         return this.id;

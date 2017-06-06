@@ -19,6 +19,7 @@ run:
     && cf push $current_app_name -p $path -f $manifest --no-start \
     && cf set-env $current_app_name AMAZON_AWS_ACCESS_KEY_ID $aws_access_key_id \
     && cf set-env $current_app_name AMAZON_AWS_ACCESS_KEY_SECRET $aws_access_key_secret \
+    && cf set-env $current_app_name GITHUB_ACCESS_TOKEN $github_access_token \
     && cf start $current_app_name \
     && cf map-route $current_app_name $domain --hostname $host \
     && cf delete -f $current_app_name-existing

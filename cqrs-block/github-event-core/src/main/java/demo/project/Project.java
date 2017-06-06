@@ -17,10 +17,12 @@ public class Project extends AbstractEntity {
     @Enumerated(value = EnumType.STRING)
     private ProjectStatus status;
 
+    private String owner;
+
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "projectId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "projectId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Commit> commits = new ArrayList<>();
 
     public Project() {
@@ -61,6 +63,14 @@ public class Project extends AbstractEntity {
         this.name = name;
     }
 
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
     public List<Commit> getCommits() {
         return commits;
     }
@@ -74,7 +84,9 @@ public class Project extends AbstractEntity {
         return "Project{" +
                 "id=" + id +
                 ", status=" + status +
+                ", owner='" + owner + '\'' +
                 ", name='" + name + '\'' +
+                ", commits=" + commits +
                 '}';
     }
 }
