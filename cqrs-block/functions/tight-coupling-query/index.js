@@ -150,28 +150,33 @@ function processEvent(event, callback, db) {
     // Get the collection for query models
     var col = db.collection('query');
 
-    function updateViewForSet(fileNames, complete) {
-        // Generates a unique MD5 hash for a combination of files
-        var compositeKey = [OPTS.VIEW_NAME, project.projectId, md5(fileNames.sort().join("_"))].join("_");
+    function updateViewForSet(fileGroups, complete) {
 
-        // Get or insert the materialized view for the composite key
-        col.findOneAndUpdate({_id: compositeKey}, {
-            $set: OPTS.TEMPLATE(project.projectId, files)
-        }, {
-            new: false,
-            upsert: true,
-            returnOriginal: true
-        }, queryHandler(col, compositeKey, complete));
+        fileGroups.forEach(function(fileNames) {
+            // Generates a unique MD5 hash for a combination of files
+            var compositeKey = [OPTS.VIEW_NAME, project.projectId, md5(fileNames.sort().join("_"))].join("_");
+
+            // Get or insert the materialized view for the composite key
+            col.findOneAndUpdate({_id: compositeKey}, {
+                $set: OPTS.TEMPLATE(project.projectId, files)
+            }, {
+                new: false,
+                upsert: true,
+                returnOriginal: true
+            }, queryHandler(col, compositeKey, complete));
+        });
     }
 
     // Views should be processed synchronously to prevent partial failure
     Sync(function () {
         var task;
+
         // Synchronously update the view using the event payload
-        fileGroups.forEach(function(fileSet) {
-            updateViewForSet(fileSet, task = new Sync.Future());
-            callback(null, task.result);
+        fileGroups.forEach(function(fileNames) {
+            updateViewForSet(fileGroups, task = new Sync.Future());
         });
+
+        callback(null, task.result);
     });
 }
 
