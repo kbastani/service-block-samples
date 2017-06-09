@@ -17,7 +17,7 @@ run:
   - |
     cd functions/$function_name \
     && mvn clean package -DskipDockerBuild \
-    cd ../.. \
+    && cd ../.. \
     && cp functions/$function_name/target/$function_name-*-aws.jar function-package \
     && cp functions/$function_name/package.yaml function-package \
     && cp -R scripts/* function-package
