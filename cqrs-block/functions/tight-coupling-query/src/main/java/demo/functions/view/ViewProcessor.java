@@ -54,7 +54,7 @@ public class ViewProcessor {
                     String key = generateKey(f);
                     View view = new View("tcq");
                     view.setId(key);
-                    view.setProjectId(project.getIdentity());
+                    view.setProjectId(projectEvent.getProjectId());
                     view.setMatches(1);
                     view.setFileIds(f);
                     return view;
@@ -62,8 +62,8 @@ public class ViewProcessor {
     }
 
     private String generateKey(List<String> files) {
-        Assert.notNull(project, "Project must not be null");
-        Assert.notNull(project.getIdentity(), "Project must have a valid id");
+        Assert.notNull(projectEvent, "Project event must not be null");
+        Assert.notNull(projectEvent.getProjectId(), "Project event must have a valid project id");
         String keyTemplate = "tcq_%s_%s";
 
         // Creates a hashed composite key of the coupled file names
@@ -71,7 +71,7 @@ public class ViewProcessor {
                 .map(this::getMd5Hash)
                 .collect(Collectors.joining("_")));
 
-        return String.format(keyTemplate, project.getIdentity(), compositeKey);
+        return String.format(keyTemplate, projectEvent.getProjectId(), compositeKey);
     }
 
     List<List<String>> subsets(List<String> set) {
