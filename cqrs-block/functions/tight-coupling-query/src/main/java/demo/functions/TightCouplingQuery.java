@@ -65,7 +65,7 @@ public class TightCouplingQuery {
                     new FindAndModifyOptions().returnNew(true).upsert(true), View.class);
 
             // Apply properties of a new view if the document was just inserted
-            if (viewResult != null) {
+            if (viewResult.getMatches() <= 1) {
                 template.save(view);
                 // Keep track of inserts and updates
                 result.put(view.getId(), "inserted");
