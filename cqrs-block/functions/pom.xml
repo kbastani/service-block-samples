@@ -17,6 +17,7 @@
 
     <modules>
         <module>project-created</module>
+        <module>project-committed</module>
     </modules>
 
     

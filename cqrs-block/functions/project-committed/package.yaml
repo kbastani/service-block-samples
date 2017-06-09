@@ -5,16 +5,13 @@ Resources:
   projectCommitted:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Handler: index.handler
-      Runtime: nodejs4.3
+      Handler: demo.functions.Handler
+      Runtime: java8
       FunctionName: project-committed
-      CodeUri: .
-      Description: Responds to an project committed event
-      MemorySize: 128
-      Timeout: 10
-      Environment:
-        Variables:
-         SERVICE_CREDENTIALS: !Ref ServiceCredentials
+      CodeUri: ./project-committed-1.0.0-SNAPSHOT-aws.jar
+      Description: Responds to a project committed event
+      MemorySize: 1024
+      Timeout: 30
       Role: 'arn:aws:iam::194021864310:role/service-role/public'
       Events:
         Api1:
@@ -22,7 +19,3 @@ Resources:
           Properties:
             Path: /projectCommitted
             Method: ANY
-Parameters:
-  ServiceCredentials:
-    Type: "String"
-    Default: "{}"
