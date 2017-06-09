@@ -84,6 +84,7 @@ jobs:
     file: project-created/cqrs-block/deployment/tasks/deploy-js-function.yml
     params:
       function_name: project-created
+      app_binding: github-event-core
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-access-key-secret}}
@@ -126,6 +127,7 @@ jobs:
     file: project-committed/cqrs-block/deployment/tasks/deploy-js-function.yml
     params:
       function_name: project-committed
+      app_binding: github-event-core
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-access-key-secret}}
@@ -168,6 +170,7 @@ jobs:
     file: tight-coupling-query/cqrs-block/deployment/tasks/deploy-js-function.yml
     params:
       function_name: tight-coupling-query
+      app_binding: github-event-core
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}
       aws_secret_access_key: {{aws-access-key-secret}}
