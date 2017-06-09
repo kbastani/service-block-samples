@@ -7,6 +7,7 @@ export AWS_ACCESS_KEY_ID=$aws_access_key_id
 export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
 export AWS_DEFAULT_REGION=$aws_default_region
 export VCAP_SERVICES=$(cf curl /v2/apps/$(cf app $app_binding --guid)/env | jq -r '.system_env_json.VCAP_SERVICES')
+export VCAP_APPLICATION=$(cf curl /v2/apps/$(cf app $app_binding --guid)/env | jq -r '.application_env_json.VCAP_APPLICATION')
 export SERVICE_CREDENTIALS=$(cf curl /v2/service_keys/$(cf service-key --guid $service_instance $service_key) | jq -r '.entity.credentials')
 
 error_exit() {
@@ -70,7 +71,7 @@ deploy() {
   aws -- cloudformation deploy \
      --template-file deployment.yaml \
      --stack-name $function_name \
-     --parameter-overrides ServiceCredentials="$SERVICE_CREDENTIALS" || error_exit "Deployment failed..."
+     --parameter-overrides ServiceCredentials="$SERVICE_CREDENTIALS" VcapServices="$VCAP_SERVICES" VcapApplication="$VCAP_APPLICATION" SpringProfiles="cloud" || error_exit "Deployment failed..."
 
   # Remove the deployment package
   rm ./deployment.yaml

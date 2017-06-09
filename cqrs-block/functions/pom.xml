@@ -18,6 +18,7 @@
     <modules>
         <module>project-created</module>
         <module>project-committed</module>
+        <module>tight-coupling-query</module>
     </modules>
 
     

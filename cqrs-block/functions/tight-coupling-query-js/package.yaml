@@ -1,40 +1,28 @@
 ﻿AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
-Description: Tight coupling query
+Description: Deployment pipeline for the tight coupling query function
 Resources:
-  projectCreated:
+  tightCouplingQuery:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Handler: demo.functions.Handler
-      Runtime: java8
+      Handler: index.handler
+      Runtime: nodejs6.10
       FunctionName: tight-coupling-query
-      CodeUri: ./tight-coupling-query-1.0.0-SNAPSHOT-aws.jar
+      CodeUri: .
       Description: Event sources a view to show the tight coupling of commits
-      MemorySize: 1024
-      Timeout: 30
+      MemorySize: 128
+      Timeout: 10
       Environment:
         Variables:
          SERVICE_CREDENTIALS: !Ref ServiceCredentials
-         VCAP_SERVICES: !Ref VcapServices
-         VCAP_APPLICATION: !Ref VcapApplication
-         SPRING_PROFILES_ACTIVE: !Ref SpringProfile
       Role: 'arn:aws:iam::194021864310:role/service-role/public'
       Events:
         Api1:
           Type: Api
           Properties:
-            Path: /projectCreated
+            Path: /tightCouplingQuery
             Method: ANY
 Parameters:
   ServiceCredentials:
-    Type: "String"
-    Default: "{}"
-  VcapServices:
-    Type: "String"
-    Default: "{}"
-  VcapApplication:
-    Type: "String"
-    Default: "{}"
-  SpringProfile:
     Type: "String"
     Default: "{}"

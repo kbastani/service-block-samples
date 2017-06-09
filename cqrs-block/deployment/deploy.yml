@@ -120,7 +120,7 @@ jobs:
           cp -r project-committed/cqrs-block/functions/* functions \
           && cp -r project-committed/cqrs-block/deployment/scripts/* scripts
   - task: package
-    file: project-committed/cqrs-block/deployment/tasks/build-js-function.yml
+    file: project-committed/cqrs-block/deployment/tasks/build-java-function.yml
     params:
       function_name: project-committed
   - task: deploy
@@ -163,7 +163,7 @@ jobs:
           cp -r tight-coupling-query/cqrs-block/functions/* functions \
           && cp -r tight-coupling-query/cqrs-block/deployment/scripts/* scripts
   - task: package
-    file: tight-coupling-query/cqrs-block/deployment/tasks/build-js-function.yml
+    file: tight-coupling-query/cqrs-block/deployment/tasks/build-java-function.yml
     params:
       function_name: tight-coupling-query
   - task: deploy
