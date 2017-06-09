@@ -2,7 +2,7 @@
 Transform: 'AWS::Serverless-2016-10-31'
 Description: Tight coupling query
 Resources:
-  projectCreated:
+  tightCouplingQuery:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: demo.functions.Handler
@@ -23,7 +23,7 @@ Resources:
         Api1:
           Type: Api
           Properties:
-            Path: /projectCreated
+            Path: /tightCouplingQuery
             Method: ANY
 Parameters:
   ServiceCredentials:
