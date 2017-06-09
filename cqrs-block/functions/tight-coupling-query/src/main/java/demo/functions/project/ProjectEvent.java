@@ -14,7 +14,7 @@ public class ProjectEvent {
 
     private Long eventId;
     private ProjectEventType type;
-    private Map<String, Object> payload;
+    private Map<String, Commit> payload;
     private Long projectId;
     private Long createdAt;
     private Long lastModified;
@@ -38,11 +38,11 @@ public class ProjectEvent {
         this.type = type;
     }
 
-    public Map<String, Object> getPayload() {
+    public Map<String, Commit> getPayload() {
         return payload;
     }
 
-    public void setPayload(Map<String, Object> payload) {
+    public void setPayload(Map<String, Commit> payload) {
         this.payload = payload;
     }
 

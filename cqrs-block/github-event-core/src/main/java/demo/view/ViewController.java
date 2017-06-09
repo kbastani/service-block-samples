@@ -21,7 +21,7 @@ public class ViewController {
     @RequestMapping(path = "/views/{viewName}/{id}")
     public ResponseEntity getQueryView(@PathVariable String viewName, @PathVariable String id) {
         return Optional.ofNullable(viewRepository.findOne(String.format("%s_%s", viewName, id)))
-                .map(e -> new ResponseEntity<>(e.getModel(), HttpStatus.OK))
+                .map(e -> new ResponseEntity<>(e, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
