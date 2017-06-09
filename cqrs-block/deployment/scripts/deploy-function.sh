@@ -71,7 +71,7 @@ deploy() {
   aws -- cloudformation deploy \
      --template-file deployment.yaml \
      --stack-name $function_name \
-     --parameter-overrides ServiceCredentials="$SERVICE_CREDENTIALS" VcapServices="$VCAP_SERVICES" VcapApplication="$VCAP_APPLICATION" SpringProfiles="cloud" || error_exit "Deployment failed..."
+     --parameter-overrides ServiceCredentials="$SERVICE_CREDENTIALS" VcapServices="$VCAP_SERVICES" VcapApplication="$VCAP_APPLICATION" SpringProfile="cloud" || error_exit "Deployment failed..."
 
   # Remove the deployment package
   rm ./deployment.yaml
