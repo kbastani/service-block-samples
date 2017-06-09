@@ -8,7 +8,7 @@ Resources:
       Handler: demo.functions.Handler
       Runtime: java8
       FunctionName: project-created
-      CodeUri: ./target/project-created-1.0.0-SNAPSHOT-aws.jar
+      CodeUri: ./project-created-1.0.0-SNAPSHOT-aws.jar
       Description: Responds to an project created event
       MemorySize: 1024
       Timeout: 30
