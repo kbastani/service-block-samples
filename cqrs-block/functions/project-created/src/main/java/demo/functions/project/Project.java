@@ -1,29 +1,14 @@
-package demo.project;
+package demo.functions.project;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+public class Project {
 
-@Entity
-public class Project extends AbstractEntity {
-
-    @Id
-    @GeneratedValue
     private Long id;
-
-    @Enumerated(value = EnumType.STRING)
     private ProjectStatus status;
 
     private String owner;
-
     private String name;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "projectId", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    private List<Commit> commits = new ArrayList<>();
 
     public Project() {
         status = ProjectStatus.PROJECT_CREATED;
@@ -71,22 +56,4 @@ public class Project extends AbstractEntity {
         this.owner = owner;
     }
 
-    public List<Commit> getCommits() {
-        return commits;
-    }
-
-    public void setCommits(List<Commit> commits) {
-        this.commits = commits;
-    }
-
-    @Override
-    public String toString() {
-        return "Project{" +
-                "id=" + id +
-                ", status=" + status +
-                ", owner='" + owner + '\'' +
-                ", name='" + name + '\'' +
-                ", commits=" + commits +
-                '}';
-    }
 }

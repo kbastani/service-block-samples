@@ -11,6 +11,7 @@
 'use strict'
 
 var mongoClient = require('mongodb').MongoClient;
+var ObjectID = require('mongodb').ObjectID;
 var md5 = require('md5');
 var Sync = require('sync');
 
@@ -88,37 +89,24 @@ function updateView(tcq) {
  * @param callback is the callback function that handles the update/insert result
  * @returns {Function} is the function that handles the update/insert life cycle of a view
  */
-function queryHandler(col, key, callback) {
-    return function (err, r) {
-        // Handle error
-        if (err)
-            callback(null, err);
+function queryHandler(batch, item, key, callback) {
 
-        // Get the view from the db response
-        var view = r.value;
+    // Get the view from the db response
+    var view = item;
 
-        if (view != null) {
-            // Apply the update to the materialized view
+    if (view != null) {
+        // Apply the update to the materialized view
+        var task = batch.find({_id: key}).updateOne({
+            $set: {
+                model: updateView(view).model,
+                updatedAt: new Date()
+            }
+        });
 
-            col.findOneAndUpdate({_id: key}, {
-                $set: {
-                    model: updateView(view).model,
-                    updatedAt: new Date()
-                }
-            }, {
-                returnOriginal: false,
-                upsert: false
-            }, function (err, r) {
-                callback(null, !err ? r.value : err);
-            });
-        } else {
-            // Return the inserted materialized view
-            col.find({_id: key})
-                .limit(1)
-                .next(function (err, doc) {
-                    callback(null, !err ? doc : err);
-                });
-        }
+        callback(null, task);
+    } else {
+        // Return the inserted materialized view
+        callback(null, key);
     }
 }
 /**
@@ -143,7 +131,7 @@ function processEvent(event, callback, db) {
     var fileGroups = powerSet(files.map(function (item, i) {
         return i;
     })).filter(function(items) {
-        return items.length >= 2;
+        return items.length >= 2 && items.length <= 4;
     }).map(function (fileSet) {
         return fileSet.map(function(i) {
             return files[i];
@@ -152,32 +140,61 @@ function processEvent(event, callback, db) {
 
     // Get the collection for query models
     var col = db.collection('query');
-    var batch = col.initializeUnorderedBulkOp();
+    var batch = col.initializeOrderedBulkOp();
 
-    function updateViewForSet(fileNames, complete) {
+    function updateViewForSet(viewParam, complete) {
+        var fileNames = viewParam.fileSet;
+        var mergeMap = viewParam.mergeMap;
         // Generates a unique MD5 hash for a combination of files
         var compositeKey = [OPTS.VIEW_NAME, project.projectId, md5(fileNames.sort().join("_"))].join("_");
 
-        // Get or insert the materialized view for the composite key
-        batch.findOneAndUpdate({_id: compositeKey}, {
-            $set: OPTS.TEMPLATE(project.projectId, fileNames)
-        }, {
-            new: false,
-            upsert: true,
-            returnOriginal: true
-        }, queryHandler(batch, compositeKey, complete));
+        var item = mergeMap.filter(function(m) {
+            return m._id == compositeKey;
+        })[0];
+
+        if(item == null) {
+            batch.find({_id: compositeKey}).upsert().updateOne({
+                $set: OPTS.TEMPLATE(project.projectId, fileNames)
+            });
+        }
+
+        queryHandler(batch, item, compositeKey, complete);
     }
+
+    function executeBatch(a, complete) {
+        a.execute(function(err, doc) {
+            complete(null, !err ? doc : err);
+        });
+    };
+
+    function getFileGroupsByKeys(fileGroupNames, complete) {
+        var objectIds = fileGroupNames.map(function(fileNames) {
+            var r = [OPTS.VIEW_NAME, project.projectId, md5(fileNames.sort().join("_"))].join("_");
+            return r;
+        });
+        console.log(objectIds);
+        col.find({ _id: { $in: objectIds } }).toArray(function(err, doc) {
+            console.log(doc);
+            complete(null, !err ? doc : err);
+        });
+    };
 
     // Views should be processed synchronously to prevent partial failure
     Sync(function () {
+        var newerTask;
+        getFileGroupsByKeys(fileGroups, newerTask = new Sync.Future());
+        var mergeMap = newerTask.result;
+
         // Synchronously update the view using the event payload
         fileGroups.map(function(fileSet) {
             var task;
-            updateViewForSet(fileSet, task = new Sync.Future());
+            updateViewForSet({ fileSet: fileSet, mergeMap: mergeMap }, task = new Sync.Future());
             return task.result;
         });
 
-        batch.execute(callback);
+        var newTask;
+        executeBatch(batch, newTask = new Sync.Future());
+        callback(null, newTask.result.getRawResponse());
     });
 }
 
@@ -235,3 +252,7 @@ function powerSet(list) {
     }
     return set;
 }
+
+Array.prototype.flatMap = function(lambda) {
+    return Array.prototype.concat.apply([], this.map(lambda));
+};

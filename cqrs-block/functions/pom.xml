@@ -4,20 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>cqrs-block</artifactId>
+    <artifactId>functions</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>io.serviceblock</groupId>
-        <artifactId>service-block-samples</artifactId>
+        <artifactId>cqrs-block</artifactId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
     <modules>
-        <module>github-event-core</module>
-        <module>functions</module>
+        <module>project-created</module>
     </modules>
 
     

@@ -77,7 +77,7 @@ jobs:
           cp -r project-created/cqrs-block/functions/* functions \
           && cp -r project-created/cqrs-block/deployment/scripts/* scripts
   - task: package
-    file: project-created/cqrs-block/deployment/tasks/build-js-function.yml
+    file: project-created/cqrs-block/deployment/tasks/build-java-function.yml
     params:
       function_name: project-created
   - task: deploy

@@ -20,5 +20,6 @@
     <modules>
         <module>spring-boot-starter-aws-lambda</module>
         <module>spring-boot-starter-github</module>
+        <module>spring-cloud-function-adapter-aws</module>
     </modules>
 </project>

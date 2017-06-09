@@ -50,13 +50,12 @@ public class EventProcessor {
     public void handle(Message<ProjectEvent> message) {
 
         ProjectEvent projectEvent = message.getPayload();
-        Project project = projectRepository.findOne(projectEvent.getProjectId());
 
         log.info(projectEvent);
 
         if (projectEvent.getType() == ProjectEventType.CREATED_EVENT) {
             try {
-                importProjectCommits(projectEvent, project);
+                importProjectCommits(projectEvent);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -69,8 +68,10 @@ public class EventProcessor {
         }
     }
 
-    private void importProjectCommits(ProjectEvent projectEvent, Project project) throws IOException {
+    private void importProjectCommits(ProjectEvent projectEvent) throws IOException {
         // Import the new project
+        Project project = projectRepository.findOne(projectEvent.getProjectId());
+
         RepositoryId repositoryId = new RepositoryId(project.getOwner(), project.getName());
         List<RepositoryCommit> repositoryCommits = gitTemplate.commitService().getCommits(repositoryId);
 
@@ -84,24 +85,27 @@ public class EventProcessor {
                         throw new RuntimeException(e);
                     }
                 })
-                .filter(a -> a.getFiles() != null)
+                .filter(a -> a.getFiles() != null && a.getFiles().size() < 10)
                 .map(a -> new Commit(a.getFiles().stream()
                         .map(f -> new File(f.getFilename()))
                         .collect(Collectors.toList())))
                 .collect(Collectors.toList());
 
-        final Project updateProject =  projectRepository.findOne(project.getIdentity());
         commits.forEach(commit -> {
-            commit.setProjectId(updateProject.getIdentity());
-            commit = commitRepository.save(commit);
-            updateProject.getCommits().add(commit);
-            projectRepository.save(updateProject);
-
-            Map<String, Object> payload = new HashMap<>();
-            payload.put("commit", commit);
-
-            // Generate commit event
-            eventService.apply(new ProjectEvent(ProjectEventType.COMMIT_EVENT, updateProject, payload));
+            saveCommits(project, commit);
         });
+    }
+
+
+    private void saveCommits(Project project, Commit commit) {
+        commit.setProjectId(project.getIdentity());
+        project.getCommits().add(commit);
+        project = projectRepository.saveAndFlush(project);
+
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("commit", commit);
+
+        // Generate commit event
+        eventService.apply(new ProjectEvent(ProjectEventType.COMMIT_EVENT, project, payload));
     }
 }
