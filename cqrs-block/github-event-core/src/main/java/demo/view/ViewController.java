@@ -41,6 +41,6 @@ public class ViewController {
 
     @GetMapping(value = "/projects/{projectId}/tightCouplingEvents", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<TightCouplingEvent> streamTightCouplingEvents(@PathVariable Long projectId) {
-        return eventRepository.findAllByProjectId(projectId);
+        return eventRepository.findByProjectId(projectId);
     }
 }

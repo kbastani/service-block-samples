@@ -5,9 +5,13 @@ import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "tightCouplingEvents")
+import javax.persistence.EntityListeners;
+
+@Document
+@EntityListeners(AuditingEntityListener.class)
 public class TightCouplingEvent {
 
     @Id

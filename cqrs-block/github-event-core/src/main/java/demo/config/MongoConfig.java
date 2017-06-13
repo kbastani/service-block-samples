@@ -14,4 +14,5 @@ public class MongoConfig extends AbstractCloudConfig {
     public MongoDbFactory mongoFactory() {
         return connectionFactory().mongoDbFactory();
     }
+
 }

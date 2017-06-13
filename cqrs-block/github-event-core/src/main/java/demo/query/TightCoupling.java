@@ -8,7 +8,6 @@ import demo.project.Project;
 import demo.project.event.ProjectEvent;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,8 +43,7 @@ public class TightCoupling {
 
             log.info(events);
 
-            // Save the new events
-            eventRepository.saveAll(Flux.fromStream(events.stream())).subscribe();
+            eventRepository.saveAll(events).subscribe();
 
             return new LambdaResponse<>(result);
         } catch (Exception ex) {
