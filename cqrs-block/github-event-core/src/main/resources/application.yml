@@ -7,7 +7,7 @@ server:
 spring:
   profiles: development
   datasource:
-    driver-class-name: org.h2.Driver
+    platform: org.hibernate.dialect.H2Dialect
   cloud:
     stream:
       bindings:
@@ -57,7 +57,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQLDialect
+    database-platform: org.hibernate.dialect.MariaDBDialect
+  datasource:
+    initialize: true
+  data:
+    mongodb:
+      uri: ${vcap.services.cqrs-lambda-db.credentials.uri}
 amazon:
   aws:
     access-key-id: ${AMAZON_AWS_ACCESS_KEY_ID:replace}
@@ -72,6 +77,7 @@ eureka:
       instanceId: ${vcap.application.instance_id:${spring.application.name}:${spring.application.instance_id:${server.port}}}
     leaseRenewalIntervalInSeconds: 5
   client:
+    enabled: false
     region: default
     registryFetchIntervalSeconds: 5
     serviceUrl:

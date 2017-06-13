@@ -1,6 +1,6 @@
 package demo.query;
 
-import demo.command.CreateProject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import demo.config.AwsLambdaConfig;
 import demo.function.FunctionService;
 import demo.function.LambdaResponse;
@@ -13,11 +13,13 @@ import reactor.core.publisher.Flux;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class TightCoupling {
 
-    private final Logger log = Logger.getLogger(CreateProject.class);
+    private final Logger log = Logger.getLogger(TightCoupling.class);
     private final FunctionService functionService;
     private final QueryEventRepository eventRepository;
 
@@ -32,16 +34,23 @@ public class TightCoupling {
             Map<String, Object> result =
                     functionService.tightCouplingQuery(getProjectEventMap(event, event.getEntity()));
 
+            log.info(result);
+
+            ObjectMapper objectMapper = new ObjectMapper();
             // Check for new tight coupling events
-            List<TightCouplingEvent> events = (List<TightCouplingEvent>)result.get("events");
+            List<TightCouplingEvent> events =
+                    Stream.of(objectMapper.readValue(objectMapper.writeValueAsString(result.get("events")),
+                            TightCouplingEvent[].class)).collect(Collectors.toList());
+
+            log.info(events);
 
             // Save the new events
-            eventRepository.saveAll(Flux.fromStream(events.stream()));
+            eventRepository.saveAll(Flux.fromStream(events.stream())).subscribe();
 
             return new LambdaResponse<>(result);
         } catch (Exception ex) {
             log.error("Error invoking AWS Lambda function", ex);
-            throw ex;
+            throw new RuntimeException("Error invoking function", ex);
         }
     }
 

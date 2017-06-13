@@ -21,6 +21,9 @@ public class TightCouplingEvent {
     @LastModifiedDate
     private DateTime lastModifiedDate;
 
+    public TightCouplingEvent() {
+    }
+
     public TightCouplingEvent(Long projectId, View view) {
         this.projectId = projectId;
         this.view = view;

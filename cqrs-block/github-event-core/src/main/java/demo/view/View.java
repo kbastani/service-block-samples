@@ -17,6 +17,9 @@ public class View {
     private Long captures = 0L;
     private List<String> fileIds = new ArrayList<>();
 
+    public View() {
+    }
+
     public View(String id, String viewName) {
         this.id = id;
         this.viewName = viewName;
