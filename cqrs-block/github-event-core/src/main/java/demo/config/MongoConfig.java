@@ -3,16 +3,16 @@ package demo.config;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.cloud.config.java.AbstractCloudConfig;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.CollectionOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 
-@EnableReactiveMongoRepositories
 @EnableMongoAuditing
 @Profile({"development", "cloud"})
+@Configuration
 public class MongoConfig extends AbstractCloudConfig {
 
     @Bean

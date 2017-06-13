@@ -1,7 +1,6 @@
 package demo.query;
 
 import demo.view.View;
-import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,10 +19,10 @@ public class TightCouplingEvent {
     private View view;
 
     @CreatedDate
-    private DateTime createdDate;
+    private Long createdDate;
 
     @LastModifiedDate
-    private DateTime lastModifiedDate;
+    private Long lastModifiedDate;
 
     public TightCouplingEvent() {
     }
@@ -57,19 +56,19 @@ public class TightCouplingEvent {
         this.view = view;
     }
 
-    public DateTime getCreatedDate() {
+    public Long getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(DateTime createdDate) {
+    public void setCreatedDate(Long createdDate) {
         this.createdDate = createdDate;
     }
 
-    public DateTime getLastModifiedDate() {
+    public Long getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(DateTime lastModifiedDate) {
+    public void setLastModifiedDate(Long lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 
@@ -79,6 +78,8 @@ public class TightCouplingEvent {
                 "id='" + id + '\'' +
                 ", projectId=" + projectId +
                 ", view=" + view +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
                 '}';
     }
 }

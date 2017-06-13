@@ -5,12 +5,15 @@ import demo.query.TightCouplingEvent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.ReplayProcessor;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @RestController
@@ -40,7 +43,18 @@ public class ViewController {
     }
 
     @GetMapping(value = "/projects/{projectId}/tightCouplingEvents", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<TightCouplingEvent> streamTightCouplingEvents(@PathVariable Long projectId) {
-        return eventRepository.findByProjectId(projectId);
+    public Flux<ServerSentEvent<TightCouplingEvent>> streamTightCouplingEvents(@PathVariable Long projectId) {
+        ReplayProcessor<ServerSentEvent<TightCouplingEvent>> replayProcessor =
+                ReplayProcessor.createTimeout(Duration.ofDays(Integer.MAX_VALUE));
+
+        eventRepository.findByProjectId(projectId)
+                .map(s -> ServerSentEvent.builder(s)
+                        .event(s.getCreatedDate().toString())
+                        .id(s.getId())
+                        .retry(Duration.ZERO)
+                        .build())
+                .subscribe(replayProcessor::onNext);
+
+        return replayProcessor;
     }
 }
