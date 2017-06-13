@@ -36,7 +36,7 @@ public class CommitController {
 
     @RequestMapping(path = "/commits/{id}")
     public ResponseEntity getCommit(@PathVariable Long id) {
-        return Optional.ofNullable(commitRepository.findOne(id))
+        return Optional.ofNullable(commitRepository.findById(id).get())
                 .map(this::getCommitResource)
                 .map(e -> new ResponseEntity<>(e, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));

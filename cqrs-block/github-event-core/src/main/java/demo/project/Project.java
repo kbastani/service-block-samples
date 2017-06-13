@@ -2,6 +2,7 @@ package demo.project;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import demo.project.event.ProjectEvent;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,8 +23,12 @@ public class Project extends AbstractEntity {
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "projectId", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "projectId", cascade = CascadeType.MERGE)
     private List<Commit> commits = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<ProjectEvent> events = new ArrayList<>();
 
     public Project() {
         status = ProjectStatus.PROJECT_CREATED;
@@ -79,6 +84,14 @@ public class Project extends AbstractEntity {
         this.commits = commits;
     }
 
+    public List<ProjectEvent> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<ProjectEvent> events) {
+        this.events = events;
+    }
+
     @Override
     public String toString() {
         return "Project{" +
@@ -86,7 +99,7 @@ public class Project extends AbstractEntity {
                 ", status=" + status +
                 ", owner='" + owner + '\'' +
                 ", name='" + name + '\'' +
-                ", commits=" + commits +
+                ", commits=" + (commits != null ? String.valueOf(commits.hashCode()) : null) +
                 '}';
     }
 }

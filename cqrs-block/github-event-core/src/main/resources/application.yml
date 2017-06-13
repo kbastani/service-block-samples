@@ -17,6 +17,7 @@ spring:
           contentType: 'application/json'
           consumer:
             durableSubscription: true
+            concurrency: 10
         output:
           destination: project
           contentType: 'application/json'
@@ -25,13 +26,13 @@ eureka:
     enabled: false
 amazon:
   aws:
-    access-key-id: replace
-    access-key-secret: replace
+    access-key-id: ${AMAZON_AWS_ACCESS_KEY_ID:replace}
+    access-key-secret: ${AMAZON_AWS_ACCESS_KEY_SECRET:replace}
 ribbon:
   ReadTimeout: 30000
   ConnectTimeout: 30000
 github:
-  access-token: replace
+  access-token: ${GITHUB_ACCESS_TOKEN:replace}
 ---
 spring:
   profiles: test

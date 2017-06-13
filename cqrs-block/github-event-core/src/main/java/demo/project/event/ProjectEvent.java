@@ -46,6 +46,10 @@ public class ProjectEvent {
     public ProjectEvent() {
     }
 
+    public ProjectEvent(Long eventId) {
+        this.eventId = eventId;
+    }
+
     public ProjectEvent(ProjectEventType type) {
         this.type = type;
     }
@@ -130,7 +134,7 @@ public class ProjectEvent {
                 "eventId=" + eventId +
                 ", type=" + type +
                 ", entity=" + entity +
-                ", payload=" + payload +
+                ", payload=" + (payload != null ? String.valueOf(payload.hashCode()) : null) +
                 ", projectId=" + projectId +
                 ", createdAt=" + createdAt +
                 ", lastModified=" + lastModified +

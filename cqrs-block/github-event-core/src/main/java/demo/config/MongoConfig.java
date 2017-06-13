@@ -1,7 +1,9 @@
 package demo.config;
 
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 
-@EnableMongoRepositories()
+@EnableReactiveMongoRepositories
+@EnableMongoAuditing
 public class MongoConfig {
 }

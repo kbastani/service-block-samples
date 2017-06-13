@@ -1,16 +1,13 @@
 package demo.project;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import demo.project.event.ProjectEvent;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.hateoas.ResourceSupport;
 
-import javax.persistence.*;
+import javax.persistence.EntityListeners;
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
@@ -21,9 +18,6 @@ public abstract class AbstractEntity extends ResourceSupport implements Serializ
 
     @LastModifiedDate
     private Long lastModified;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProjectEvent> events = new ArrayList<>();
 
     public AbstractEntity() {
     }
@@ -42,15 +36,6 @@ public abstract class AbstractEntity extends ResourceSupport implements Serializ
 
     public void setLastModified(Long lastModified) {
         this.lastModified = lastModified;
-    }
-
-    @JsonIgnore
-    public List<ProjectEvent> getEvents() {
-        return events;
-    }
-
-    public void setEvents(List<ProjectEvent> events) {
-        this.events = events;
     }
 
     @Override

@@ -1,10 +1,11 @@
 package demo.project.controller;
 
-import demo.event.EventService;
 import demo.project.Commit;
 import demo.project.Project;
+import demo.project.ProjectService;
 import demo.project.event.ProjectEvent;
 import demo.project.event.ProjectEventRepository;
+import demo.project.event.ProjectEventService;
 import demo.project.event.ProjectEventType;
 import demo.project.repository.CommitRepository;
 import demo.project.repository.ProjectRepository;
@@ -30,15 +31,18 @@ public class ProjectController {
 
     private final ProjectRepository projectRepository;
     private final CommitRepository commitRepository;
-    private final EventService eventService;
     private final ProjectEventRepository eventRepository;
+    private final ProjectService projectService;
+    private final ProjectEventService projectEventService;
 
-    public ProjectController(ProjectRepository projectRepository, CommitRepository commitRepository, EventService eventService,
-                             ProjectEventRepository eventRepository) {
+    public ProjectController(ProjectRepository projectRepository, CommitRepository commitRepository,
+                             ProjectEventRepository eventRepository, ProjectService projectService,
+                             ProjectEventService projectEventService) {
         this.projectRepository = projectRepository;
         this.commitRepository = commitRepository;
-        this.eventService = eventService;
         this.eventRepository = eventRepository;
+        this.projectService = projectService;
+        this.projectEventService = projectEventService;
     }
 
     @RequestMapping(path = "/projects")
@@ -62,7 +66,7 @@ public class ProjectController {
 
     @RequestMapping(path = "/projects/{id}")
     public ResponseEntity getProject(@PathVariable Long id) {
-        return Optional.ofNullable(projectRepository.findOne(id))
+        return Optional.ofNullable(projectRepository.findById(id).get())
                 .map(this::getProjectResource)
                 .map(e -> new ResponseEntity<>(e, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -71,7 +75,7 @@ public class ProjectController {
     @DeleteMapping(path = "/projects/{id}")
     public ResponseEntity deleteProject(@PathVariable Long id) {
         try {
-            projectRepository.delete(id);
+            projectRepository.delete(new Project(id));
         } catch (Exception ex) {
             throw new RuntimeException("Project deletion failed");
         }
@@ -137,10 +141,9 @@ public class ProjectController {
     private Resource<Project> createProjectResource(Project project) {
         Assert.notNull(project, "Project body must not be null");
 
-        // Create the new project
-        project = projectRepository.save(project);
-
-        project = eventService.apply(new ProjectEvent(ProjectEventType.CREATED_EVENT, project));
+        project = projectService.updateProject(project);
+        project = projectEventService.apply(new ProjectEvent(ProjectEventType.CREATED_EVENT, project),
+                projectService).getEntity();
 
         return getProjectResource(project);
     }
@@ -168,7 +171,7 @@ public class ProjectController {
     private Resource<Commit> appendCommitResource(Long projectId, Commit commit) {
         Assert.notNull(commit, "Commit body must be provided");
 
-        Project project = projectRepository.findOne(projectId);
+        Project project = projectRepository.findById(projectId).get();
         Assert.notNull(project, "Project could not be found");
 
         commit.setProjectId(project.getIdentity());
@@ -180,7 +183,7 @@ public class ProjectController {
         payload.put("commit", commit);
 
         // Generate commit event
-        eventService.apply(new ProjectEvent(ProjectEventType.COMMIT_EVENT, project, payload));
+        projectEventService.apply(new ProjectEvent(ProjectEventType.COMMIT_EVENT, project, payload), projectService);
 
         return new Resource<>(commit,
                 linkTo(CommitController.class)
@@ -205,11 +208,11 @@ public class ProjectController {
     private Resource<ProjectEvent> appendEventResource(Long projectId, ProjectEvent event) {
         Assert.notNull(event, "Event body must be provided");
 
-        Project project = projectRepository.findOne(projectId);
+        Project project = projectRepository.findById(projectId).get();
         Assert.notNull(project, "Project could not be found");
 
         event.setProjectId(project.getIdentity());
-        eventService.apply(event);
+        projectEventService.apply(event, projectService);
 
         return new Resource<>(event,
                 linkTo(ProjectController.class)
@@ -226,7 +229,7 @@ public class ProjectController {
     }
 
     private ProjectEvent getEventResource(Long eventId) {
-        return eventRepository.findOne(eventId);
+        return eventRepository.findById(eventId).get();
     }
 
     private List<ProjectEvent> getProjectEventResources(Long id) {

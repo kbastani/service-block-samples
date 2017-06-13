@@ -29,6 +29,10 @@ public class Commit extends AbstractEntity {
         status = CommitStatus.PUSHED;
     }
 
+    public Commit(Long id) {
+        this.id = id;
+    }
+
     public Commit(List<File> files) {
         this();
         this.files = files;
@@ -82,7 +86,7 @@ public class Commit extends AbstractEntity {
                 ", status=" + status +
                 ", project=" + project +
                 ", projectId=" + projectId +
-                ", files=" + files +
+                ", files=" + (files != null ? String.valueOf(files.hashCode()) : null) +
                 '}';
     }
 }
