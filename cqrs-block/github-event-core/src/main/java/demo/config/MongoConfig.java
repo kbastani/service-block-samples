@@ -1,5 +1,6 @@
 package demo.config;
 
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.cloud.config.java.AbstractCloudConfig;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,11 @@ public class MongoConfig extends AbstractCloudConfig {
         return connectionFactory().mongoDbFactory();
     }
 
+    @Bean
+    public ConnectionFactory rabbitFactory() {
+        return connectionFactory().rabbitConnectionFactory();
+    }
+    
     @Bean
     CommandLineRunner commandLineRunner(MongoOperations operations) {
         return (args) -> {
