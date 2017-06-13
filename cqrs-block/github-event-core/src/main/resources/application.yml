@@ -54,8 +54,12 @@ eureka:
 ---
 spring:
   profiles: cloud
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MariaDBDialect
   datasource:
-    platform: org.hibernate.dialect.H2Dialect
+    initialize: true
   data:
     mongodb:
       uri: ${vcap.services.cqrs-lambda-db.credentials.uri}
