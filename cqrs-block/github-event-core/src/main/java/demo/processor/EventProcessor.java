@@ -1,5 +1,6 @@
 package demo.processor;
 
+import demo.function.LambdaResponse;
 import demo.project.event.ProjectEvent;
 import demo.project.event.ProjectEventType;
 import demo.query.ProjectQueries;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Configuration
 @EnableBinding(Sink.class)
@@ -41,7 +43,8 @@ public class EventProcessor {
 
         if (projectEvent.getType() == ProjectEventType.COMMIT_EVENT) {
             // Update query models
-            projectQueries.getTightCoupling().apply(projectEvent);
+            LambdaResponse<Map<String, Object>> response =
+                    projectQueries.getTightCoupling().apply(projectEvent);
         }
     }
 }
