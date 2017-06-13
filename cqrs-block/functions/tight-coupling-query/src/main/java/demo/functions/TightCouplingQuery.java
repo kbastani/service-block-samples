@@ -79,7 +79,7 @@ public class TightCouplingQuery {
                 ((List<String>) result.get("updated")).add(view.getId());
                 if(viewResult.getMatches() >= 2) {
                     ((List<TightCouplingEvent>) result.get("events"))
-                            .add(new TightCouplingEvent(view.getProjectId(), view));
+                            .add(new TightCouplingEvent(view.getProjectId(), viewResult));
                 }
             }
         });

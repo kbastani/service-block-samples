@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.ReplayProcessor;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -43,18 +45,34 @@ public class ViewController {
     }
 
     @GetMapping(value = "/projects/{projectId}/tightCouplingEvents", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<ServerSentEvent<TightCouplingEvent>> streamTightCouplingEvents(@PathVariable Long projectId) {
-        ReplayProcessor<ServerSentEvent<TightCouplingEvent>> replayProcessor =
-                ReplayProcessor.createTimeout(Duration.ofDays(Integer.MAX_VALUE));
+    public Flux<ServerSentEvent<TightCouplingEvent>> streamTightCouplingEvents(@PathVariable Long projectId,
+                                                                               HttpServletRequest request) {
 
-        eventRepository.findByProjectId(projectId)
-                .map(s -> ServerSentEvent.builder(s)
-                        .event(s.getCreatedDate().toString())
-                        .id(s.getId())
-                        .retry(Duration.ZERO)
-                        .build())
+        // Create a replay processor to play back the server side events
+        ReplayProcessor<ServerSentEvent<TightCouplingEvent>> replayProcessor =
+                ReplayProcessor.create();
+
+        // Stream the events from MongoDB using cursor tailing
+        Flux<TightCouplingEvent> events = eventRepository.findByProjectId(projectId);
+
+        // Check if this is an SSE reconnection from a client
+        String lastEventId = request.getHeader("Last-Event-Id");
+
+        // On SSE client reconnect, skip ahead in the stream to play back only new events
+        if (lastEventId != null)
+            events = events.skipUntil(e -> e.getId().equals(lastEventId)).skip(1);
+
+        // Subscribe to the tailing events from the reactive repository query
+        Disposable disposable = events.map(s -> ServerSentEvent.builder(s)
+                .event(s.getCreatedDate().toString())
+                .id(s.getId())
+                .retry(Duration.ZERO)
+                .build())
+                .take(50)
                 .subscribe(replayProcessor::onNext);
 
-        return replayProcessor;
+        // Return the replay processor, which will monitor for events from MongoDB
+        return replayProcessor.delayElements(Duration.ofMillis(500))
+                .doFinally(c -> disposable.dispose());
     }
 }
