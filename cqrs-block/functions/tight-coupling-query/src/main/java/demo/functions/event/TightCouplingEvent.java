@@ -1,25 +1,12 @@
-package demo.query;
+package demo.functions.event;
 
-import demo.view.View;
-import org.joda.time.DateTime;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.mapping.Document;
+import demo.functions.view.View;
 
-@Document
 public class TightCouplingEvent {
 
-    @Id
     private String id;
     private Long projectId;
     private View view;
-
-    @CreatedDate
-    private DateTime createdDate;
-
-    @LastModifiedDate
-    private DateTime lastModifiedDate;
 
     public TightCouplingEvent(Long projectId, View view) {
         this.projectId = projectId;
@@ -48,30 +35,5 @@ public class TightCouplingEvent {
 
     public void setView(View view) {
         this.view = view;
-    }
-
-    public DateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(DateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public DateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(DateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    @Override
-    public String toString() {
-        return "TightCouplingEvent{" +
-                "id='" + id + '\'' +
-                ", projectId=" + projectId +
-                ", view=" + view +
-                '}';
     }
 }

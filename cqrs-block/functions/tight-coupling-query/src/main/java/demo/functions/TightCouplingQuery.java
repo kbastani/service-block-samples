@@ -1,5 +1,6 @@
 package demo.functions;
 
+import demo.functions.event.TightCouplingEvent;
 import demo.functions.project.Commit;
 import demo.functions.project.Project;
 import demo.functions.project.ProjectEvent;
@@ -16,6 +17,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,10 @@ public class TightCouplingQuery {
         return projectEventParam -> {
             // Extract parameters from the event before processing
             Map<String, Object> result = new HashMap<>();
+            result.put("updated", new ArrayList<String>());
+            result.put("inserted", new ArrayList<String>());
+            result.put("events", new ArrayList<TightCouplingEvent>());
+
             Project project = projectEventParam.getProject();
             ProjectEvent event = projectEventParam.getProjectEvent();
             Commit commit = event.getPayload().getOrDefault("commit", null);
@@ -68,10 +74,13 @@ public class TightCouplingQuery {
             if (viewResult.getMatches() <= 1) {
                 template.save(view);
                 // Keep track of inserts and updates
-                result.put(view.getId(), "inserted");
+                ((List<String>) result.get("inserted")).add(view.getId());
             } else {
-                result.put(view.getId(), "updated");
+                ((List<String>) result.get("updated")).add(view.getId());
             }
+
+            ((List<TightCouplingEvent>) result.get("events"))
+                    .add(new TightCouplingEvent(view.getProjectId(), view));
         });
     }
 }
