@@ -71,16 +71,17 @@ public class TightCouplingQuery {
                     new FindAndModifyOptions().returnNew(true).upsert(true), View.class);
 
             // Apply properties of a new view if the document was just inserted
-            if (viewResult.getMatches() <= 1) {
+            if (viewResult.getMatches() <= 1 && viewResult.getCaptures() == 0) {
                 template.save(view);
                 // Keep track of inserts and updates
                 ((List<String>) result.get("inserted")).add(view.getId());
             } else {
                 ((List<String>) result.get("updated")).add(view.getId());
+                if(viewResult.getMatches() >= 2) {
+                    ((List<TightCouplingEvent>) result.get("events"))
+                            .add(new TightCouplingEvent(view.getProjectId(), view));
+                }
             }
-
-            ((List<TightCouplingEvent>) result.get("events"))
-                    .add(new TightCouplingEvent(view.getProjectId(), view));
         });
     }
 }
