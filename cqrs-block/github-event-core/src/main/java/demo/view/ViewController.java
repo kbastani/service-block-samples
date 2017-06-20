@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.ReplayProcessor;
 
@@ -63,16 +62,11 @@ public class ViewController {
             events = events.skipUntil(e -> e.getId().equals(lastEventId)).skip(1);
 
         // Subscribe to the tailing events from the reactive repository query
-        Disposable disposable = events.map(s -> ServerSentEvent.builder(s)
+        return events.map(s -> ServerSentEvent.builder(s)
                 .event(s.getCreatedDate().toString())
                 .id(s.getId())
-                .retry(Duration.ZERO)
                 .build())
                 .take(50)
-                .subscribe(replayProcessor::onNext);
-
-        // Return the replay processor, which will monitor for events from MongoDB
-        return replayProcessor.delayElements(Duration.ofMillis(500))
-                .doFinally(c -> disposable.dispose());
+                .delayElements(Duration.ofMillis(200));
     }
 }

@@ -25,13 +25,16 @@ public class MongoConfig extends AbstractCloudConfig {
     public ConnectionFactory rabbitFactory() {
         return connectionFactory().rabbitConnectionFactory();
     }
-    
+
     @Bean
     CommandLineRunner commandLineRunner(MongoOperations operations) {
         return (args) -> {
             // Setup the streaming data endpoint
             if (operations.collectionExists("tightCouplingEvent")) {
                 operations.dropCollection("tightCouplingEvent");
+            }
+            if (operations.collectionExists("query")) {
+                operations.dropCollection("query");
             }
             CollectionOptions options = new CollectionOptions(5242880, 5000, true);
             operations.createCollection("tightCouplingEvent", options);

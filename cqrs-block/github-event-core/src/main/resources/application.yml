@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: development
+    active: development,cloud
 server:
   port: 8787
 ---
@@ -54,12 +54,8 @@ eureka:
 ---
 spring:
   profiles: cloud
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.MariaDBDialect
   datasource:
-    initialize: true
+    platform: org.hibernate.dialect.MariaDBDialect
   data:
     mongodb:
       uri: ${vcap.services.cqrs-lambda-db.credentials.uri}
