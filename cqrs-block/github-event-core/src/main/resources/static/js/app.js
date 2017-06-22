@@ -1,6 +1,5 @@
-var width = 500,
-    height = 500,
-    radius = 2;
+var radius = 4,
+    bound = 10;
 
 var center = d3.forceCenter(width / 2, height / 2);
 var minX = width / 2, minY = height / 2, maxX = width / 2, maxY = height / 2;
@@ -14,7 +13,7 @@ var voronoi = d3.voronoi()
         [width + 1, height + 1]
     ]);
 
-var colorRange = d3.scaleLinear()
+var colorRange = d3.scaleLog()
     .domain([minGroup, maxGroup])
     .interpolate(d3.interpolateHsl)
     .range(["#2ecc71", "#e74c3c"]);
@@ -72,7 +71,7 @@ function scaleX(d) {
     x = d3.scaleLinear()
         .domain([minX, maxX])
         .interpolate(d3.interpolateNumber)
-        .range([0, width])(x);
+        .range([bound, width - bound])(x);
     return Math.min(Math.max(x, d.group), width - d.group)
 }
 
@@ -81,46 +80,32 @@ function scaleY(d) {
     y = d3.scaleLinear()
         .domain([minY, maxY])
         .interpolate(d3.interpolateNumber)
-        .range([0, height])(y);
+        .range([bound, height - bound])(y);
     return Math.min(Math.max(y, d.group), height - d.group);
 }
-
-// var nodes = [{id: 0, reflexive: false}, {id: 1, reflexive: false}],
-//     links = [{source: nodes[0], target: nodes[1], left: false, right: true}];
-
-var nodes = [],
-    links = [];
 
 var svg = d3.select('body')
     .append('svg')
     .attr('width', width)
     .attr('height', height);
 
-//    .alphaMin(.01).alpha(.3).alphaTarget(.3)
 var simulation = function () {
     calculateBounds();
-    var forceSimulation = d3.forceSimulation()
+    var forceSimulation = d3.forceSimulation(nodes)
         .force("center", center)
+        .force("charge", d3.forceManyBody().strength(-3000))
+        .force("link", d3.forceLink(links).id(function (d) {
+            return d.id;
+        }).distance(function (d) {
+            return Math.max(scaleStrength(d) * 400, d.strength <= 5 ? 140 : 50);
+        }).strength(.3))
         .force("collide", d3.forceCollide(function (d) {
-            return Math.max(scaleGroup(d) * width / 2, 25);
-        }).strength(function (d) {
-            return Math.min(1.0 - scaleGroup(d), 1.0);
+            return Math.max(scaleGroup(d) * (300), 150);
         }))
-        .force("body", d3.forceManyBody())
-        .force("x", d3.forceX(20))
-        .force("y", d3.forceY(20))
-        .force("link", d3.forceLink()
-            .id(function (d) {
-                return d.id;
-            }).strength(function (d) {
-                return Math.min(1.0 - scaleStrength(d), 1.0);
-            }).distance(function (d) {
-                return Math.max((1.0 - scaleStrength(d)) * (width / 3), 40);
-            }))
-        .nodes(nodes)
-        .on("tick", ticked);
+        .force("x", d3.forceX())
+        .force("y", d3.forceY());
 
-    forceSimulation.force("link").links(links);
+    forceSimulation.on("tick", ticked).velocityDecay(.9);
 
     return forceSimulation;
 };
@@ -174,7 +159,8 @@ function ticked() {
             return scaleY(d);
         })
         .attr("fill", function (d) {
-            return d != null ? colorRange(d.group) : "black";
+            var group = d != null ? d.group : null;
+            return group > 1 ? colorRange(group) : "gray";
         });
 
     cell = cell.exit().remove();
@@ -186,7 +172,8 @@ function ticked() {
         .enter()
         .append("path")
         .attr("fill", function (d) {
-            return d != null ? colorRange(graph.nodes[d.data.id].group) : "black";
+            var group = d != null ? graph.nodes[d.data.id].group : null;
+            return group > 4 ? colorRange(group) : "gray";
         })
         .attr('class', 'polygon')
         .call(redrawPolygon);
@@ -194,7 +181,8 @@ function ticked() {
     svg.select('.cells').selectAll('path')
         .data(diagram.polygons())
         .attr("fill", function (d) {
-            return d != null ? colorRange(graph.nodes[d.data.id].group) : "black";
+            var group = d != null ? graph.nodes[d.data.id].group : null;
+            return group > 4 ? colorRange(group) : "gray";
         })
         .call(redrawPolygon);
 }
@@ -230,6 +218,9 @@ function restart(updateSim) {
         .attr('cy', function (d) {
             d[1] = d.y;
             return scaleY(d)
+        })
+        .attr('id', function (d) {
+            return d.id;
         })
         .attr('fill', function (d) {
             return colorRange(d.group);

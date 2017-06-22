@@ -16,7 +16,7 @@
     </parent>
 
     <modules>
-        <module>tight-coupling-query</module>
+        <module>commit-metrics</module>
     </modules>
     
 </project>

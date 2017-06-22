@@ -6,7 +6,7 @@ import demo.functions.project.Project;
 import demo.functions.project.ProjectEvent;
 import demo.functions.project.ProjectEventParam;
 import demo.functions.view.View;
-import demo.functions.view.ViewProcessor;
+import demo.functions.query.TightCouplingProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 @SpringBootApplication
-public class TightCouplingQuery {
+public class MetricsFunction {
 
     public static void main(String[] args) {
-        SpringApplication.run(TightCouplingQuery.class, args);
+        SpringApplication.run(MetricsFunction.class, args);
     }
 
     @Bean
@@ -45,8 +45,8 @@ public class TightCouplingQuery {
 
             // If a commit exists and has files, create a view processor to generate query model updates
             if (commit != null) {
-                ViewProcessor viewProcessor = new ViewProcessor(event, project, commit);
-                List<View> viewList = viewProcessor.generateView();
+                TightCouplingProcessor tightCouplingProcessor = new TightCouplingProcessor(event, project, commit);
+                List<View> viewList = tightCouplingProcessor.generateView();
 
                 // Insert or update query models produced from the event
                 upsertViewList(viewList, template, result);

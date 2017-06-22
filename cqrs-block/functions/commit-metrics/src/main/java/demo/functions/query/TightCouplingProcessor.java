@@ -1,9 +1,10 @@
-package demo.functions.view;
+package demo.functions.query;
 
 import demo.functions.project.Commit;
 import demo.functions.project.File;
 import demo.functions.project.Project;
 import demo.functions.project.ProjectEvent;
+import demo.functions.view.View;
 import org.springframework.util.Assert;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
@@ -15,16 +16,16 @@ import java.util.stream.Collectors;
 
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.MD5;
 
-public class ViewProcessor {
+public class TightCouplingProcessor {
 
     private ProjectEvent projectEvent;
     private Project project;
     private Commit commit;
 
-    public ViewProcessor() {
+    public TightCouplingProcessor() {
     }
 
-    public ViewProcessor(ProjectEvent projectEvent, Project project, Commit commit) {
+    public TightCouplingProcessor(ProjectEvent projectEvent, Project project, Commit commit) {
         this.projectEvent = projectEvent;
         this.project = project;
         this.commit = commit;

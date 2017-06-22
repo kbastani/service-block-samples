@@ -1,7 +1,12 @@
 var workerContext = new Worker('js/worker.js');
 
 var enableTest = false;
-var updating = false;
+
+var width = 960,
+    height = 500;
+
+var nodes = [],
+    links = [];
 
 var graph = {
     nodes: {},
@@ -9,18 +14,12 @@ var graph = {
 };
 
 workerContext.addEventListener('message', function (e) {
-    //console.log('Worker said: ', e.data);
     var msg = e.data;
     var updateNodes = [];
     var updateLink;
     updateNodes.push(addNode(msg.source, msg.value));
     updateNodes.push(addNode(msg.target, msg.value));
     updateLink = addLink(msg.source, msg.target, msg.value);
-
-    while(updating) {
-    }
-
-    updating = true;
 
     updateNodes.forEach(function(n) {
        if(n != null)
@@ -31,7 +30,6 @@ workerContext.addEventListener('message', function (e) {
         links.push(updateLink);
 
     restart(true);
-    updating = false;
 }, false);
 
 function addNode(id, value) {

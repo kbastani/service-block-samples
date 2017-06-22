@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.CollectionOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
 
+import javax.sql.DataSource;
+
 @EnableMongoAuditing
 @Profile({"development", "cloud"})
 @Configuration
@@ -24,6 +26,11 @@ public class MongoConfig extends AbstractCloudConfig {
     @Bean
     public ConnectionFactory rabbitFactory() {
         return connectionFactory().rabbitConnectionFactory();
+    }
+
+    @Bean
+    public DataSource dataSource() {
+        return connectionFactory().dataSource();
     }
 
     @Bean

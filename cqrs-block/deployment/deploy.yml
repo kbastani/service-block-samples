@@ -8,13 +8,13 @@ resources:
     branch: master
     paths:
     - ./cqrs-block/github-event-core
-- name: tight-coupling-query
+- name: commit-metrics
   type: git
   source:
     uri: https://github.com/kbastani/service-block-samples
     branch: master
     paths:
-    - ./cqrs-block/functions/tight-coupling-query
+    - ./cqrs-block/functions/commit-metrics
 jobs:
 - name: github-cqrs-block
   max_in_flight: 1
@@ -39,10 +39,10 @@ jobs:
       aws_access_key_secret: {{aws-access-key-secret}}
       github_access_token: {{github-access-token}}
       space: {{pws-space}}
-- name: tight-coupling-query
+- name: commit-metrics
   max_in_flight: 1
   plan:
-  - get: tight-coupling-query
+  - get: commit-metrics
     trigger: true
   - task: prepare
     config:
@@ -51,7 +51,7 @@ jobs:
         type: docker-image
         source: {repository: busybox}
       inputs:
-        - name: tight-coupling-query
+        - name: commit-metrics
       outputs:
         - name: functions
         - name: scripts
@@ -60,16 +60,16 @@ jobs:
         args:
         - -exc
         - |
-          cp -r tight-coupling-query/cqrs-block/functions/* functions \
-          && cp -r tight-coupling-query/cqrs-block/deployment/scripts/* scripts
+          cp -r commit-metrics/cqrs-block/functions/* functions \
+          && cp -r commit-metrics/cqrs-block/deployment/scripts/* scripts
   - task: package
-    file: tight-coupling-query/cqrs-block/deployment/tasks/build-java-function.yml
+    file: commit-metrics/cqrs-block/deployment/tasks/build-java-function.yml
     params:
-      function_name: tight-coupling-query
+      function_name: commit-metrics
   - task: deploy
-    file: tight-coupling-query/cqrs-block/deployment/tasks/deploy-function.yml
+    file: commit-metrics/cqrs-block/deployment/tasks/deploy-function.yml
     params:
-      function_name: tight-coupling-query
+      function_name: commit-metrics
       app_binding: github-event-core
       aws_default_region: {{aws-region}}
       aws_access_key_id: {{aws-access-key-id}}

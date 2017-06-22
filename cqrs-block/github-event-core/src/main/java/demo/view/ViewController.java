@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.ReplayProcessor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
@@ -46,12 +45,7 @@ public class ViewController {
     @GetMapping(value = "/projects/{projectId}/tightCouplingEvents", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<TightCouplingEvent>> streamTightCouplingEvents(@PathVariable Long projectId,
                                                                                HttpServletRequest request) {
-
-        // Create a replay processor to play back the server side events
-        ReplayProcessor<ServerSentEvent<TightCouplingEvent>> replayProcessor =
-                ReplayProcessor.create();
-
-        // Stream the events from MongoDB using cursor tailing
+        // Stream the events from MongoDB
         Flux<TightCouplingEvent> events = eventRepository.findByProjectId(projectId);
 
         // Check if this is an SSE reconnection from a client
@@ -66,7 +60,6 @@ public class ViewController {
                 .event(s.getCreatedDate().toString())
                 .id(s.getId())
                 .build())
-                .take(50)
-                .delayElements(Duration.ofMillis(200));
+                .delayElements(Duration.ofMillis(100));
     }
 }

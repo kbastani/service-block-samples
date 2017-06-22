@@ -7,8 +7,8 @@ Resources:
     Properties:
       Handler: demo.functions.Handler
       Runtime: java8
-      FunctionName: tight-coupling-query
-      CodeUri: ./tight-coupling-query-1.0.0-SNAPSHOT-aws.jar
+      FunctionName: commit-metrics
+      CodeUri: ./commit-metrics-1.0.0-SNAPSHOT-aws.jar
       Description: Event sources a view to show the tight coupling of commits
       MemorySize: 1024
       Timeout: 30
