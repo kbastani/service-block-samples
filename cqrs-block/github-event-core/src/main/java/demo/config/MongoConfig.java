@@ -43,6 +43,7 @@ public class MongoConfig extends AbstractCloudConfig {
             if (operations.collectionExists("query")) {
                 operations.dropCollection("query");
             }
+            
             CollectionOptions options = new CollectionOptions(5242880, 5000, true);
             operations.createCollection("tightCouplingEvent", options);
         };

@@ -1,6 +1,6 @@
 ﻿AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
-Description: Tight coupling query
+Description: Commit metrics
 Resources:
   tightCouplingQuery:
     Type: 'AWS::Serverless::Function'
@@ -23,7 +23,7 @@ Resources:
         Api1:
           Type: Api
           Properties:
-            Path: /tightCouplingQuery
+            Path: /commitMetrics
             Method: ANY
 Parameters:
   ServiceCredentials:

@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.EntityListeners;
 
+
 @Document
 @EntityListeners(AuditingEntityListener.class)
 public class TightCouplingEvent {
