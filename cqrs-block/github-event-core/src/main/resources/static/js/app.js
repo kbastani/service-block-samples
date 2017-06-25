@@ -134,11 +134,34 @@ svg.append('svg:defs').append('svg:marker')
     .attr('d', 'M10,-5L0,0L10,5')
     .attr('fill', '#000');
 
-svg.append('g')
+var graphBox = svg.append('g');
+
+graphBox.append('line')
   .attr('transform', 'translate(0,' + (seriesHeight) + ')')
-  .append('line')
   .attr('x1', 0)
   .attr('y1', height - seriesHeight)
+  .attr('x2', width)
+  .attr('y2', height - seriesHeight)
+  .attr('fill', 'black')
+  .attr('stroke', 'black')
+  .attr('stroke-width', '1px')
+  .attr('class', 'bars-frame');
+
+graphBox.append('line')
+  .attr('transform', 'translate(0,' + (0) + ')')
+  .attr('x1', 0)
+  .attr('y1', height)
+  .attr('x2', 0)
+  .attr('y2', height - seriesHeight)
+  .attr('fill', 'black')
+  .attr('stroke', 'black')
+  .attr('stroke-width', '1px')
+  .attr('class', 'bars-frame');
+
+graphBox.append('line')
+  .attr('transform', 'translate(0,' + (0) + ')')
+  .attr('x1', width)
+  .attr('y1', height)
   .attr('x2', width)
   .attr('y2', height - seriesHeight)
   .attr('fill', 'black')
@@ -201,7 +224,20 @@ function ticked() {
         .call(redrawPolygon);
 }
 
-var bar = svg.append('svg:g').attr('class', 'bars').selectAll('path');
+var lineFunction = d3.area()
+      .x(function(d) { return d.data.x; })
+      .y1(function(d) { return d.data.y; })
+      .y0(height + seriesHeight);
+
+var bar = svg.append('svg:g').attr('class', 'bars')
+  .append("path")
+  .datum(bars)
+  .attr("d", lineFunction)
+  .attr("stroke", "black")
+  .attr("stroke-width", 1)
+  .attr("fill", "gray");
+
+bar.call(drawBar);
 
 function setBarBounds(bar) {
   minBar = minBar == -1 ? bar.data.length : (bar.data.length < minBar ? bar.data.length : minBar);
@@ -221,41 +257,35 @@ function scaleBars(d) {
         .range([0, 1.0])(d.data.length);
 }
 
-function animateSeries(elapsed) {
+function drawGraph(elapsed) {
   calculateBars();
+  drawBar();
 
-  bar = bar.exit().remove();
-  svg.select('.bars').selectAll('rect')
-      .data(bars)
-      .enter()
-      .append("rect")
-      .attr("fill", "gray")
-      .attr("class", "bar")
-      .call(drawBar);
-
-  svg.select('.bars').selectAll('rect')
-      .data(bars)
+  if(eventCount > 0) {
+    bar.datum(bars)
       .transition()
       .duration(200)
-      .attr("fill", "gray")
-      .call(drawBar);
+      .attr("fill", "lightgray")
+      .attr("stroke", "black")
+      .attr("d", lineFunction);
+  } else {
+    bar.datum(bars)
+      .attr("fill", "lightgray")
+      .attr("stroke", "black")
+      .attr("d", lineFunction);
+  }
 }
 
-function drawBar(d) {
-  var seriesLen = bars.length;
-
-  d.attr("width", function(d, i) {
-    return (width / bars.length) - 1;
-  })
-  .attr("height", function(d, i) {
-    return scaleBars(d) * seriesHeight;
-  })
-  .attr("x", function(d, i) {
-    return (((i / seriesLen) * width)) + .5;
-  })
-  .attr("y", function(d, i) {
-    return (height - seriesHeight) + (seriesHeight - (scaleBars(d) * seriesHeight));
-  });
+function drawBar() {
+    var seriesLen = bars.length;
+    bars.forEach(function(d, i) {
+      if(i > 0) {
+        d.data.x = ((width / seriesLen) * i) + ((width / seriesLen));
+      } else {
+        d.data.x = 0;
+      }
+      d.data.y = (height - (scaleBars(d) * seriesHeight));
+    });
 }
 
 var sim = simulation();

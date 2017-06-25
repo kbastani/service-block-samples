@@ -1,6 +1,6 @@
 var workerContext = new Worker('js/worker.js');
 
-var enableTest = true;
+var enableTest = false;
 
 var width = 960,
     height = 400;
@@ -13,16 +13,34 @@ var graph = {
     links: {}
 };
 
+var interval = 5;
+var mergeThreshold = 20;
+var bars = [];
+var startTime;
+var events = [];
 var series = [];
+var eventCount = 0;
 
 workerContext.addEventListener('message', function (e) {
     var msg = getLinks(e.data.data);
     var updateNodes = [];
     var updateLink;
 
+    events.push(e.data.data.createdDate);
+
     // Append to time series
     updateSeries(e.data.data.createdDate);
-    animateSeries();
+    eventCount++;
+
+    // Increase interval and merge points
+    if(bars.length > mergeThreshold) {
+      interval = interval * 1.5;
+      bars = [];
+      events.forEach(updateSeries);
+      eventCount = 0;
+    }
+
+    drawGraph();
 
     updateNodes.push(addNode(msg.source, msg.value));
     updateNodes.push(addNode(msg.target, msg.value));
@@ -38,10 +56,6 @@ workerContext.addEventListener('message', function (e) {
 
     restart(true);
 }, false);
-
-var interval = 60 * 1000;
-var bars = [];
-var startTime;
 
 function updateSeries(d) {
   if(startTime == null)
