@@ -13,10 +13,17 @@ var graph = {
     links: {}
 };
 
+var series = [];
+
 workerContext.addEventListener('message', function (e) {
-    var msg = e.data;
+    var msg = getLinks(e.data.data);
     var updateNodes = [];
     var updateLink;
+
+    // Append to time series
+    updateSeries(e.data.data.createdDate);
+    animateSeries();
+
     updateNodes.push(addNode(msg.source, msg.value));
     updateNodes.push(addNode(msg.target, msg.value));
     updateLink = addLink(msg.source, msg.target, msg.value);
@@ -31,6 +38,30 @@ workerContext.addEventListener('message', function (e) {
 
     restart(true);
 }, false);
+
+var interval = 50;
+var bars = [];
+var startTime;
+
+function updateSeries(d) {
+  if(startTime == null)
+    startTime = d
+
+  var dT = Math.floor((d - startTime) / interval);
+  if(bars[dT] == null) {
+    bars[dT] = {};
+    bars[dT].data = [dT];
+  } else {
+    bars[dT].data.push(d);
+  }
+
+  for(var i = 0; i < bars.length; i++) {
+    if(bars[i] == undefined) {
+      bars[i] = {};
+      bars[i].data = [];
+    }
+  }
+}
 
 function addNode(id, value) {
     if (graph.nodes[id] == null) {
@@ -53,4 +84,17 @@ function addLink(n1, n2, value) {
     } else {
         return null;
     }
+}
+
+function getLinks(result) {
+    var view = result.view;
+    return getLink(view);
+}
+
+function getLink(view) {
+    return {
+        source: view.fileIds[0],
+        target: view.fileIds[1],
+        value: view.matches
+    };
 }

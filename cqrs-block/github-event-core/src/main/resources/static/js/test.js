@@ -5,27 +5,16 @@ var position = -1;
 if(enableTest) {
   window.setInterval(function() {
     if(results[position + 1] != null) {
-      workerContext.postMessage(getLinks(results[position + 1].data));
+      workerContext.postMessage(results[position + 1]);
       position++;
     }
   }, 200);
 } else {
   var projectId = new URLSearchParams(window.location.search).get("projectId");
   new EventSource('/v1/projects/' + projectId + '/tightCouplingEvents').onmessage = event => {
-      const msg = JSON.parse(event.data);
+      const msg = JSON.parse(event);
       workerContext.postMessage(getLinks(msg));
   }
 }
 
-function getLinks(result) {
-  var view = result.view;
-  return getLink(view);
-}
 
-function getLink(view) {
-  return {
-    source: view.fileIds[0],
-    target: view.fileIds[1],
-    value: view.matches
-  };
-}

@@ -1,16 +1,18 @@
 var radius = 4,
-    bound = 10;
+    bound = 10,
+    seriesHeight = 100;
 
-var center = d3.forceCenter(width / 2, height / 2);
-var minX = width / 2, minY = height / 2, maxX = width / 2, maxY = height / 2;
+var center = d3.forceCenter(width / 2, (height - seriesHeight) / 2);
+var minX = width / 2, minY = (height - seriesHeight) / 2, maxX = width / 2, maxY = (height - seriesHeight) / 2;
 var maxGroup = 1, minGroup = 0;
 var maxStrength = 1, minStrength = 0;
+var maxBar = 0, minBar = -1;
 
 var voronoi = d3.voronoi()
     .x(scaleX)
     .y(scaleY)
     .extent([[-1, -1],
-        [width + 1, height + 1]
+        [width + 1, height - seriesHeight]
     ]);
 
 var colorRange = d3.scaleLog()
@@ -40,9 +42,9 @@ function setLinkBounds(d) {
 function calculateBounds() {
     // Calculate the scale functions for the SVG boundary
     minX = width / 2;
-    minY = height / 2;
+    minY = (height - seriesHeight) / 2;
     maxX = width / 2;
-    maxY = height / 2;
+    maxY = (height - seriesHeight) / 2;
     maxGroup = 0;
     minGroup = 1;
     maxStrength = 0;
@@ -80,7 +82,7 @@ function scaleY(d) {
     y = d3.scaleLinear()
         .domain([minY, maxY])
         .interpolate(d3.interpolateNumber)
-        .range([bound, height - bound])(y);
+        .range([bound, (height - seriesHeight) - bound])(y);
     return Math.min(Math.max(y, d.group), height - d.group);
 }
 
@@ -131,6 +133,18 @@ svg.append('svg:defs').append('svg:marker')
     .append('svg:path')
     .attr('d', 'M10,-5L0,0L10,5')
     .attr('fill', '#000');
+
+svg.append('g')
+  .attr('transform', 'translate(0,' + (seriesHeight) + ')')
+  .append('line')
+  .attr('x1', 0)
+  .attr('y1', height - seriesHeight)
+  .attr('x2', width)
+  .attr('y2', height - seriesHeight)
+  .attr('fill', 'black')
+  .attr('stroke', 'black')
+  .attr('stroke-width', '1px')
+  .attr('class', 'bars-frame');
 
 var cell = svg.append('svg:g').attr('class', 'cells').selectAll('path'),
     link = svg.append('svg:g').attr("class", "links").selectAll('path'),
@@ -185,6 +199,63 @@ function ticked() {
             return group > 4 ? colorRange(group) : "gray";
         })
         .call(redrawPolygon);
+}
+
+var bar = svg.append('svg:g').attr('class', 'bars').selectAll('path');
+
+function setBarBounds(bar) {
+  minBar = minBar == -1 ? bar.data.length : (bar.data.length < minBar ? bar.data.length : minBar);
+  maxBar = bar.data.length > maxBar ? bar.data.length : maxBar;
+}
+
+function calculateBars() {
+  minBar = -1;
+  maxBar = 0;
+  bars.forEach(setBarBounds);
+}
+
+function scaleBars(d) {
+    return d3.scaleLinear()
+        .domain([minBar, maxBar])
+        .interpolate(d3.interpolateNumber)
+        .range([0, 1.0])(d.data.length);
+}
+
+function animateSeries(elapsed) {
+  calculateBars();
+
+  bar = bar.exit().remove();
+  svg.select('.bars').selectAll('rect')
+      .data(bars)
+      .enter()
+      .append("rect")
+      .attr("fill", "gray")
+      .attr("class", "bar")
+      .call(drawBar);
+
+  svg.select('.bars').selectAll('rect')
+      .data(bars)
+      .transition()
+      .duration(200)
+      .attr("fill", "gray")
+      .call(drawBar);
+}
+
+function drawBar(d) {
+  var seriesLen = bars.length;
+
+  d.attr("width", function(d, i) {
+    return (width / bars.length) - 1;
+  })
+  .attr("height", function(d, i) {
+    return scaleBars(d) * seriesHeight;
+  })
+  .attr("x", function(d, i) {
+    return (((i / seriesLen) * width)) + .5;
+  })
+  .attr("y", function(d, i) {
+    return (height - seriesHeight) + (seriesHeight - (scaleBars(d) * seriesHeight));
+  });
 }
 
 var sim = simulation();
