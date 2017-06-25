@@ -1,9 +1,9 @@
 var workerContext = new Worker('js/worker.js');
 
-var enableTest = false;
+var enableTest = true;
 
 var width = 960,
-    height = 500;
+    height = 400;
 
 var nodes = [],
     links = [];
@@ -39,7 +39,7 @@ workerContext.addEventListener('message', function (e) {
     restart(true);
 }, false);
 
-var interval = 50;
+var interval = 60 * 1000;
 var bars = [];
 var startTime;
 

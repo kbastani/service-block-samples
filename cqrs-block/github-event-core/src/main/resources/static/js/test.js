@@ -12,9 +12,7 @@ if(enableTest) {
 } else {
   var projectId = new URLSearchParams(window.location.search).get("projectId");
   new EventSource('/v1/projects/' + projectId + '/tightCouplingEvents').onmessage = event => {
-      const msg = JSON.parse(event);
-      workerContext.postMessage(getLinks(msg));
+      const msg = JSON.parse(event.data);
+      workerContext.postMessage({ data: msg });
   }
 }
-
-
