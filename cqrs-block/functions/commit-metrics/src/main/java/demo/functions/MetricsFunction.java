@@ -64,14 +64,14 @@ public class MetricsFunction {
             Query updateQuery = new Query(Criteria.where("_id").is(view.getId()));
 
             // Increment the match count for the coupled files
-            Update update = new Update().inc("matches", 1);
+            Update update = new Update().inc("matches", 1).set("lastModified", view.getLastModified());
 
             // Apply the increment or insert a new document
             View viewResult = template.findAndModify(updateQuery, update,
                     new FindAndModifyOptions().returnNew(true).upsert(true), View.class);
 
             // Apply properties of a new view if the document was just inserted
-            if (viewResult.getMatches() <= 1 && viewResult.getCaptures() == 0) {
+            if (viewResult.getMatches() <= 1) {
                 template.save(view);
                 // Keep track of inserts and updates
                 ((List<String>) result.get("inserted")).add(view.getId());

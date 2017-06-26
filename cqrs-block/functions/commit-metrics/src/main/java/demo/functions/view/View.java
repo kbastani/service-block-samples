@@ -14,8 +14,9 @@ public class View {
     private String viewName;
     private Long projectId;
     private Integer matches = 0;
-    private Long captures = 0L;
     private List<String> fileIds = new ArrayList<>();
+    private Long createdAt;
+    private Long lastModified;
 
     public View(String viewName) {
         this.viewName = viewName;
@@ -53,20 +54,28 @@ public class View {
         this.matches = matches;
     }
 
-    public Long getCaptures() {
-        return captures;
-    }
-
-    public void setCaptures(Long captures) {
-        this.captures = captures;
-    }
-
     public List<String> getFileIds() {
         return fileIds;
     }
 
     public void setFileIds(List<String> fileIds) {
         this.fileIds = fileIds;
+    }
+
+    public Long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Long getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Long updatedAt) {
+        this.lastModified = updatedAt;
     }
 
     @Override
@@ -76,8 +85,9 @@ public class View {
                 ", viewName='" + viewName + '\'' +
                 ", projectId=" + projectId +
                 ", matches=" + matches +
-                ", captures=" + captures +
                 ", fileIds=" + fileIds +
+                ", createdAt=" + createdAt +
+                ", lastModified=" + lastModified +
                 '}';
     }
 
@@ -92,8 +102,9 @@ public class View {
         if (viewName != null ? !viewName.equals(view.viewName) : view.viewName != null) return false;
         if (projectId != null ? !projectId.equals(view.projectId) : view.projectId != null) return false;
         if (matches != null ? !matches.equals(view.matches) : view.matches != null) return false;
-        if (captures != null ? !captures.equals(view.captures) : view.captures != null) return false;
-        return fileIds != null ? fileIds.equals(view.fileIds) : view.fileIds == null;
+        if (fileIds != null ? !fileIds.equals(view.fileIds) : view.fileIds != null) return false;
+        if (createdAt != null ? !createdAt.equals(view.createdAt) : view.createdAt != null) return false;
+        return lastModified != null ? lastModified.equals(view.lastModified) : view.lastModified == null;
     }
 
     @Override
@@ -102,8 +113,9 @@ public class View {
         result = 31 * result + (viewName != null ? viewName.hashCode() : 0);
         result = 31 * result + (projectId != null ? projectId.hashCode() : 0);
         result = 31 * result + (matches != null ? matches.hashCode() : 0);
-        result = 31 * result + (captures != null ? captures.hashCode() : 0);
         result = 31 * result + (fileIds != null ? fileIds.hashCode() : 0);
+        result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
+        result = 31 * result + (lastModified != null ? lastModified.hashCode() : 0);
         return result;
     }
 }

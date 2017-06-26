@@ -257,23 +257,16 @@ function scaleBars(d) {
         .range([0, 1.0])(d.data.length);
 }
 
-function drawGraph(elapsed) {
-  calculateBars();
-  drawBar();
+function drawGraph() {
+    calculateBars();
+    drawBar();
 
-  if(eventCount > 0) {
     bar.datum(bars)
-      .transition()
-      .duration(200)
-      .attr("fill", "lightgray")
-      .attr("stroke", "black")
-      .attr("d", lineFunction);
-  } else {
-    bar.datum(bars)
-      .attr("fill", "lightgray")
-      .attr("stroke", "black")
-      .attr("d", lineFunction);
-  }
+        .transition()
+        .duration(200)
+        .attr("fill", "lightgray")
+        .attr("stroke", "black")
+        .attr("d", lineFunction);
 }
 
 function drawBar() {

@@ -13,33 +13,22 @@ var graph = {
     links: {}
 };
 
-var interval = 5;
-var mergeThreshold = 20;
+var interval;
 var bars = [];
 var startTime;
 var events = [];
-var series = [];
-var eventCount = 0;
 
 workerContext.addEventListener('message', function (e) {
     var msg = getLinks(e.data.data);
     var updateNodes = [];
     var updateLink;
 
-    events.push(e.data.data.createdDate);
+    events.push(e.data.data.view.lastUpdated);
 
     // Append to time series
-    updateSeries(e.data.data.createdDate);
-    eventCount++;
-
-    // Increase interval and merge points
-    if(bars.length > mergeThreshold) {
-      interval = interval * 1.5;
-      bars = [];
-      events.forEach(updateSeries);
-      eventCount = 0;
-    }
-
+    interval = (events[events.length - 1] - startTime) / 100;
+    bars = [];
+    events.forEach(updateSeries);
     drawGraph();
 
     updateNodes.push(addNode(msg.source, msg.value));
@@ -59,7 +48,7 @@ workerContext.addEventListener('message', function (e) {
 
 function updateSeries(d) {
   if(startTime == null)
-    startTime = d
+    startTime = d;
 
   var dT = Math.floor((d - startTime) / interval);
   if(bars[dT] == null) {
