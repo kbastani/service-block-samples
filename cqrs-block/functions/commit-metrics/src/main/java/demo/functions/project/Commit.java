@@ -10,6 +10,8 @@ public class Commit {
     private CommitStatus status;
     private Long projectId;
     private List<File> files;
+    private String author;
+    private Long commitDate;
     private Long createdAt;
     private Long lastModified;
 
@@ -53,6 +55,22 @@ public class Commit {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public Long getCommitDate() {
+        return commitDate;
+    }
+
+    public void setCommitDate(Long commitDate) {
+        this.commitDate = commitDate;
     }
 
     public Long getCreatedAt() {

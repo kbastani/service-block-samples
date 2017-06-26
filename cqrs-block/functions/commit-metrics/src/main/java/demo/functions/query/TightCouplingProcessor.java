@@ -59,7 +59,7 @@ public class TightCouplingProcessor {
                     view.setMatches(1);
                     view.setFileIds(f);
                     view.setCreatedAt(commit.getCreatedAt());
-                    view.setLastModified(commit.getLastModified());
+                    view.setLastModified(commit.getCommitDate());
                     return view;
                 }).collect(Collectors.toList());
     }
