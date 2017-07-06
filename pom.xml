@@ -30,7 +30,6 @@
     <modules>
         <module>basic-block</module>
         <module>cqrs-block</module>
-        <module>todo-block</module>
         <module>starters</module>
     </modules>
 
