@@ -26,7 +26,7 @@
         <aws-lambda-events.version>1.2.1</aws-lambda-events.version>
         <reactor.version>3.0.7.RELEASE</reactor.version>
         <spring-cloud-function.version>1.0.0.BUILD-SNAPSHOT</spring-cloud-function.version>
-        <start-class>demo.functions.MetricsFunction</start-class>
+        <start-class>demo.functions.AccountActivatedFunction</start-class>
     </properties>
 
     <dependencies>
