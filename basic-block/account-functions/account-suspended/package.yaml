@@ -1,0 +1,21 @@
+﻿AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Account suspended
+Resources:
+  tightCouplingQuery:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: demo.functions.Handler
+      Runtime: java8
+      FunctionName: account-suspended
+      CodeUri: ./account-suspended-1.0.0-SNAPSHOT-aws.jar
+      Description: Implements business logic for suspending an account
+      MemorySize: 1024
+      Timeout: 30
+      Role: 'arn:aws:iam::194021864310:role/service-role/public'
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /accountSuspended
+            Method: ANY

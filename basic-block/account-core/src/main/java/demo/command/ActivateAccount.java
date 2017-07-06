@@ -33,9 +33,9 @@ public class ActivateAccount {
     @HystrixCommand(fallbackMethod = "accountActivatedFallback", commandProperties = {
             @HystrixProperty(name = EXECUTION_TIMEOUT_ENABLED, value = "false")
     })
-    public LambdaResponse<Account> apply(Map eventMap) {
+    public LambdaResponse<Account> apply(AccountEvent accountEvent) {
         try {
-            return new LambdaResponse<>(functionService.accountActivated(eventMap));
+            return new LambdaResponse<>(functionService.accountActivated(accountEvent));
         } catch (Exception ex) {
             if (Objects.equals(ex.getMessage(), "Account already activated")) {
                 return new LambdaResponse<>(ex, null);

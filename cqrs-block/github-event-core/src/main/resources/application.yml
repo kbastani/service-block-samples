@@ -55,7 +55,7 @@ eureka:
 spring:
   profiles: cloud
   datasource:
-    platform: org.hibernate.dialect.MariaDBDialect
+    platform: org.hibernate.dialect.H2Dialect
   data:
     mongodb:
       uri: ${vcap.services.cqrs-lambda-db.credentials.uri}

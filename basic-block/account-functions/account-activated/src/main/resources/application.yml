@@ -1,0 +1,6 @@
+spring.profiles.active: function
+---
+spring:
+  profiles: docker
+server:
+  port: 2000

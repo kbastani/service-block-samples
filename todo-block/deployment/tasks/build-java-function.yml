@@ -1,0 +1,23 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: maven
+    tag: alpine
+inputs:
+- name: functions
+- name: scripts
+outputs:
+- name: function-package
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    cd functions/$function_name \
+    && mvn clean package -DskipDockerBuild \
+    && cd ../.. \
+    && cp functions/$function_name/target/$function_name-*-aws.jar function-package \
+    && cp functions/$function_name/package.yaml function-package \
+    && cp -R scripts/* function-package

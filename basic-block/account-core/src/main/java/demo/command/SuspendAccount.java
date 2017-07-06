@@ -33,9 +33,9 @@ public class SuspendAccount {
     @HystrixCommand(fallbackMethod = "accountSuspendedFallback", commandProperties = {
             @HystrixProperty(name = EXECUTION_TIMEOUT_ENABLED, value = "false")
     })
-    public LambdaResponse<Account> apply(Map eventMap) {
+    public LambdaResponse<Account> apply(AccountEvent accountEvent) {
         try {
-            return new LambdaResponse<>(functionService.accountSuspended(eventMap));
+            return new LambdaResponse<>(functionService.accountSuspended(accountEvent));
         } catch (Exception ex) {
             if (Objects.equals(ex.getMessage(), "Account already suspended")) {
                 return new LambdaResponse<>(ex, null);

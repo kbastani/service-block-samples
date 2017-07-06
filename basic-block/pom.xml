@@ -17,5 +17,6 @@
 
     <modules>
         <module>account-core</module>
+        <module>functions</module>
     </modules>
 </project>

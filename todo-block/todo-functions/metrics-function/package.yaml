@@ -1,0 +1,40 @@
+﻿AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Commit metrics
+Resources:
+  tightCouplingQuery:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: demo.functions.Handler
+      Runtime: java8
+      FunctionName: commit-metrics
+      CodeUri: ./commit-metrics-1.0.0-SNAPSHOT-aws.jar
+      Description: Event sources a view to show the tight coupling of commits
+      MemorySize: 1024
+      Timeout: 30
+      Environment:
+        Variables:
+         SERVICE_CREDENTIALS: !Ref ServiceCredentials
+         VCAP_SERVICES: !Ref VcapServices
+         VCAP_APPLICATION: !Ref VcapApplication
+         SPRING_PROFILES_ACTIVE: !Ref SpringProfile
+      Role: 'arn:aws:iam::194021864310:role/service-role/public'
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /commitMetrics
+            Method: ANY
+Parameters:
+  ServiceCredentials:
+    Type: "String"
+    Default: "{}"
+  VcapServices:
+    Type: "String"
+    Default: "{}"
+  VcapApplication:
+    Type: "String"
+    Default: "{}"
+  SpringProfile:
+    Type: "String"
+    Default: "{}"

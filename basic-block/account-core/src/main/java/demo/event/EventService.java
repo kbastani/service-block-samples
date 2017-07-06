@@ -52,11 +52,11 @@ public class EventService {
         switch (accountEvent.getType()) {
             case ACCOUNT_ACTIVATED:
                 result = accountCommandService.getActivateAccount()
-                        .apply(getAccountEventMap(accountEvent, events, account));
+                        .apply(withPayload(accountEvent, events, account));
                 break;
             case ACCOUNT_SUSPENDED:
                 result = accountCommandService.getSuspendAccount()
-                        .apply(getAccountEventMap(accountEvent, events, account));
+                        .apply(withPayload(accountEvent, events, account));
                 break;
         }
 
@@ -85,11 +85,11 @@ public class EventService {
         return accountEvent;
     }
 
-    private Map<String, Object> getAccountEventMap(AccountEvent event, List<AccountEvent> events, Account account) {
+    private AccountEvent withPayload(AccountEvent event, List<AccountEvent> events, Account account) {
         Map<String, Object> eventMap = new HashMap<>();
-        eventMap.put("accountEvent", event);
-        eventMap.put("eventLog", events);
         eventMap.put("account", account);
-        return eventMap;
+        eventMap.put("events", events);
+        event.setPayload(eventMap);
+        return event;
     }
 }

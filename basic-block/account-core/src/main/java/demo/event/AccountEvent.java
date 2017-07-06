@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Map;
 
 /**
  * The domain event {@link AccountEvent} tracks the type and state of events as applied to the {@link Account} domain
@@ -30,6 +31,9 @@ public class AccountEvent {
     @Transient
     @JsonIgnore
     private Account entity;
+
+    @Transient
+    private Map<String, Object> payload;
 
     private Long accountId;
 
@@ -97,5 +101,13 @@ public class AccountEvent {
 
     public void setLastModified(Long lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public Map<String, Object> getPayload() {
+        return payload;
+    }
+
+    public void setPayload(Map<String, Object> payload) {
+        this.payload = payload;
     }
 }
