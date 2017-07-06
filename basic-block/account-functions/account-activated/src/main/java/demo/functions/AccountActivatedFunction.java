@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import java.util.List;
 import java.util.function.Function;
 
+import static demo.functions.AccountEventType.ACCOUNT_ACTIVATED;
+
 @SpringBootApplication
 public class AccountActivatedFunction {
 
@@ -25,9 +27,9 @@ public class AccountActivatedFunction {
 
             if(events != null && account != null) {
                 // Get the most recent event
-                AccountEvent lastEvent = events.stream().findFirst().get();
+                AccountEvent lastEvent = events.stream().findFirst().orElse(null);
 
-                if(lastEvent.getType() != AccountEventType.ACCOUNT_ACTIVATED) {
+                if(lastEvent == null || lastEvent.getType() != ACCOUNT_ACTIVATED) {
                     account.setStatus(AccountStatus.ACCOUNT_ACTIVATED);
                 } else {
                     throw new RuntimeException("Account already activated");

@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import java.util.List;
 import java.util.function.Function;
 
+import static demo.functions.AccountEventType.ACCOUNT_SUSPENDED;
+
 @SpringBootApplication
 public class AccountSuspendedFunction {
 
@@ -25,9 +27,9 @@ public class AccountSuspendedFunction {
 
             if(events != null && account != null) {
                 // Get the most recent event
-                AccountEvent lastEvent = events.stream().findFirst().get();
+                AccountEvent lastEvent = events.stream().findFirst().orElse(null);
 
-                if(lastEvent.getType() != AccountEventType.ACCOUNT_SUSPENDED) {
+                if(lastEvent == null || lastEvent.getType() != ACCOUNT_SUSPENDED) {
                     account.setStatus(AccountStatus.ACCOUNT_SUSPENDED);
                 } else {
                     throw new RuntimeException("Account already suspended");
