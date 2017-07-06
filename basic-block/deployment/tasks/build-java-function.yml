@@ -15,9 +15,9 @@ run:
   args:
   - -exc
   - |
-    cd basic-block/account-functions/$function_name \
+    cd functions/$function_name \
     && mvn clean package -DskipDockerBuild \
     && cd ../.. \
-    && cp account-functions/$function_name/target/$function_name-*-aws.jar function-package \
-    && cp account-functions/$function_name/package.yaml function-package \
+    && cp functions/$function_name/target/$function_name-*-aws.jar function-package \
+    && cp functions/$function_name/package.yaml function-package \
     && cp -R scripts/* function-package
