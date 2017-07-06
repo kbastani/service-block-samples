@@ -1,8 +1,5 @@
 package demo.account;
 
-import demo.event.AccountEvent;
-import demo.event.AccountEventRepository;
-import demo.event.AccountEventType;
 import demo.event.EventService;
 import org.springframework.hateoas.LinkBuilder;
 import org.springframework.hateoas.Resource;

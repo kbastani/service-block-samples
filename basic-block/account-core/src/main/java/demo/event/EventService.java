@@ -1,6 +1,8 @@
 package demo.event;
 
 import demo.account.Account;
+import demo.account.AccountEvent;
+import demo.account.AccountEventRepository;
 import demo.account.AccountRepository;
 import demo.domain.LambdaResponse;
 import demo.function.AccountCommandService;

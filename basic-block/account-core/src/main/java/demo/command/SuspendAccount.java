@@ -6,8 +6,8 @@ import demo.account.Account;
 import demo.account.AccountStatus;
 import demo.config.AwsLambdaConfig;
 import demo.domain.LambdaResponse;
-import demo.event.AccountEvent;
-import demo.event.AccountEventType;
+import demo.account.AccountEvent;
+import demo.account.AccountEventType;
 import demo.function.LambdaFunctionService;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.netflix.hystrix.contrib.javanica.conf.HystrixPropertiesManager.EXECUTION_TIMEOUT_ENABLED;
-import static demo.event.AccountEventType.ACCOUNT_SUSPENDED;
+import static demo.account.AccountEventType.ACCOUNT_SUSPENDED;
 
 @Service
 public class SuspendAccount {

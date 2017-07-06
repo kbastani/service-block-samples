@@ -1,7 +1,5 @@
 package demo.functions;
 
-import demo.functions.project.Project;
-import demo.functions.project.ProjectEventParam;
 import org.springframework.cloud.function.adapter.aws.SpringBootRequestHandler;
 
 /**
@@ -9,5 +7,5 @@ import org.springframework.cloud.function.adapter.aws.SpringBootRequestHandler;
  *
  * @author Kenny Bastani
  */
-public class Handler extends SpringBootRequestHandler<ProjectEventParam, Project> {
+public class Handler extends SpringBootRequestHandler<AccountEvent, Account> {
 }

@@ -1,4 +1,4 @@
-package demo.event;
+package demo.account;
 
 import org.springframework.hateoas.Resources;
 

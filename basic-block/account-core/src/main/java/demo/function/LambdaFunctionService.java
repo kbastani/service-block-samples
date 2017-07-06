@@ -3,7 +3,7 @@ package demo.function;
 import com.amazonaws.services.lambda.invoke.LambdaFunction;
 import com.amazonaws.services.lambda.model.LogType;
 import demo.account.Account;
-import demo.event.AccountEvent;
+import demo.account.AccountEvent;
 
 public interface LambdaFunctionService {
     

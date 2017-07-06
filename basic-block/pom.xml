@@ -17,6 +17,6 @@
 
     <modules>
         <module>account-core</module>
-        <module>functions</module>
+        <module>account-functions</module>
     </modules>
 </project>
