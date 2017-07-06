@@ -3,18 +3,17 @@ package demo.command;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import demo.account.Account;
+import demo.account.AccountEvent;
+import demo.account.AccountEventType;
 import demo.account.AccountStatus;
 import demo.config.AwsLambdaConfig;
 import demo.domain.LambdaResponse;
-import demo.account.AccountEvent;
-import demo.account.AccountEventType;
 import demo.function.LambdaFunctionService;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import static com.netflix.hystrix.contrib.javanica.conf.HystrixPropertiesManager.EXECUTION_TIMEOUT_ENABLED;
@@ -46,10 +45,9 @@ public class ActivateAccount {
         }
     }
 
-    public LambdaResponse<Account> accountActivatedFallback(Map eventMap) {
-        Account account = (Account) eventMap.get("account");
-        List<AccountEvent> events = (List<AccountEvent>) eventMap.get("eventLog");
-        AccountEvent accountEvent = (AccountEvent) eventMap.get("accountEvent");
+    public LambdaResponse<Account> accountActivatedFallback(AccountEvent event) {
+        Account account = (Account) event.getPayload().get("account");
+        List<AccountEvent> events = (List<AccountEvent>) event.getPayload().get("events");
 
         // Get the most recent event
         AccountEventType lastEvent = events.stream().findFirst()
@@ -58,7 +56,7 @@ public class ActivateAccount {
 
         Assert.isTrue(lastEvent != ACCOUNT_ACTIVATED, "Account already activated");
 
-        account.setStatus(AccountStatus.valueOf(accountEvent.getType().toString()));
+        account.setStatus(AccountStatus.valueOf(event.getType().toString()));
 
         return new LambdaResponse<>(null, account);
     }

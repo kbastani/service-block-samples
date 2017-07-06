@@ -18,13 +18,10 @@ public class AccountActivatedFunction {
     public Function<AccountEvent, Account> function() {
         return accountEvent -> {
             // Get event log from payload
-            List<AccountEvent> events =
-                    (List<AccountEvent>)accountEvent.getPayload()
-                            .getOrDefault("events", null);
+            List<AccountEvent> events = accountEvent.getPayload().getEvents();
 
-            // Get account from the payload
-            Account account = (Account)accountEvent.getPayload()
-                    .getOrDefault("account", null);
+            // Get account
+            Account account = accountEvent.getPayload().getAccount();
 
             if(events != null && account != null) {
                 // Get the most recent event
@@ -33,10 +30,10 @@ public class AccountActivatedFunction {
                 if(lastEvent.getType() != AccountEventType.ACCOUNT_ACTIVATED) {
                     account.setStatus(AccountStatus.ACCOUNT_ACTIVATED);
                 } else {
-                    throw new RuntimeException("Account already suspended");
+                    throw new RuntimeException("Account already activated");
                 }
             } else {
-                throw new RuntimeException("Payload did not supply valid account payload");
+                throw new RuntimeException("Payload did not supply account events");
             }
 
             return account;

@@ -1,12 +1,10 @@
 package demo.functions;
 
-import java.util.Map;
-
 public class AccountEvent {
 
     private Long eventId;
     private AccountEventType type;
-    private Map<String, Object> payload;
+    private AccountEventPayload payload;
     private Long accountId;
     private Long createdAt;
     private Long lastModified;
@@ -63,11 +61,11 @@ public class AccountEvent {
         this.lastModified = lastModified;
     }
 
-    public Map<String, Object> getPayload() {
+    public AccountEventPayload getPayload() {
         return payload;
     }
 
-    public void setPayload(Map<String, Object> payload) {
+    public void setPayload(AccountEventPayload payload) {
         this.payload = payload;
     }
 }

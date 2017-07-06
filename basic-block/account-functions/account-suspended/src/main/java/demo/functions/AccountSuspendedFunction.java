@@ -18,13 +18,10 @@ public class AccountSuspendedFunction {
     public Function<AccountEvent, Account> function() {
         return accountEvent -> {
             // Get event log from payload
-            List<AccountEvent> events =
-                    (List<AccountEvent>)accountEvent.getPayload()
-                            .getOrDefault("events", null);
+            List<AccountEvent> events = accountEvent.getPayload().getEvents();
 
             // Get account
-            Account account = (Account)accountEvent.getPayload()
-                    .getOrDefault("account", null);
+            Account account = accountEvent.getPayload().getAccount();
 
             if(events != null && account != null) {
                 // Get the most recent event
